@@ -7,7 +7,7 @@
 ## Caracteristici Principale
 
 | Modul | Descriere Detaliată |
-| :---: | :--- | :--- |
+| :--- | :--- |
 | **Punct de Vânzare (POS)** | Interfață simplă (`index.html`) pentru înregistrarea rapidă a vânzărilor de titluri de călătorie. |
 | **Generare Documente** | Emiți automat **Chitanțe PDF** și documente de **Audit XML** pentru fiecare tranzacție, asigurând conformitatea. |
 | **Dashboard Analitic** | Vizualizare centralizată a statisticilor cheie și a distribuției datelor. |
