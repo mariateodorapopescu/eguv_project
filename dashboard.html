@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comenzi - Metrorex</title>
+    <title>Rapoarte - Metrorex</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="icon" type="image/png" href="https://www.metrorex.ro/images/logo.svg">
 </head>
 <body>
     <!-- Header -->
@@ -18,160 +20,206 @@
             <nav>
                 <ul class="nav-menu">
                     <li><a href="/">Acasă</a></li>
-                    <li><a href="/comenzi.html" class="active">Comenzile mele</a></li>
-                    <li><a href="/dashboard.html">Istoric tranzacții</a></li>
-                     <li><a href="https://www.metrorex.ro/titluri-de-calatorie-tarife">Tarife</a></li>
-                    <!-- <li><a href="#">Contul meu</a></li> -->
+                    <li><a href="/comenzi.html">Comenzi</a></li>
+                    <li><a href="/dashboard.html" class="active">Rapoarte</a></li>
+                    <li><a href="https://www.metrorex.ro/titluri-de-calatorie-tarife">Tarife</a></li>
                 </ul>
             </nav>
-            
-            <!-- <div class="nav-right">
-                <div class="lang-switch">
-                    <a href="#" class="active">RO</a>
-                    <a href="#">EN</a>
-                </div>
-                <button class="logout-btn" title="Deconectare">⏻</button>
-            </div> -->
         </div>
     </header>
-    <div class="container">
-        <header>
-            <div>
-                <h1>📊 Dashboard Metrorex</h1>
-                <small>Raportare si Analiza - LAB 2 eGovernment</small>
-            </div>
-            <nav>
-                <a href="/">🏠 Formular</a>
-                <a href="/comenzi.html">📋 Comenzi</a>
-                <a href="/dashboard.html">📊 Dashboard</a>
-            </nav>
-        </header>
-        
-        <div id="alertContainer"></div>
-        
-        <div class="actions-bar">
-            <div>
-                <span id="lastUpdate">Ultima actualizare: -</span>
-            </div>
-            <div>
-                <button class="btn btn-primary" onclick="loadData()">🔄 Actualizeaza</button>
-                <button class="btn btn-success" onclick="generateReport()" id="btnGenerateReport">
-                    📄 Genereaza Raport PDF
-                </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Rapoarte și Statistici</h1>
+            
+            <div id="alertContainer"></div>
+            
+            <div class="page-layout">
+                <div class="main-column">
+                    
+                    <!-- Actions bar -->
+                    <div class="form-section">
+                        <div class="actions-row">
+                            <span id="lastUpdate">Ultima actualizare: -</span>
+                            <div class="actions-buttons">
+                                <button class="btn btn-secondary" onclick="loadData()">Actualizează</button>
+                                <button class="btn btn-primary" id="btnGenerateReport" onclick="generateReport()">Generează Raport PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="form-section">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="statTotalComenzi">0</div>
+                                <div class="stat-label">Total Comenzi</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statTotalVanzari">0.00</div>
+                                <div class="stat-label">Total Vânzări (RON)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statTotalTVA">0.00</div>
+                                <div class="stat-label">TVA Colectat (RON)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statMediaComanda">0.00</div>
+                                <div class="stat-label">Media Comandă (RON)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statBilete">0</div>
+                                <div class="stat-label">Bilete</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statAbonamente">0</div>
+                                <div class="stat-label">Abonamente</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Row 1 -->
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3 class="chart-title">Tipuri produse</h3>
+                            <div class="chart-container">
+                                <canvas id="chartBileteAbonamente"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3 class="chart-title">Metode de plată</h3>
+                            <div class="chart-container">
+                                <canvas id="chartMetodePlata"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Row 2 -->
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3 class="chart-title">Top produse vândute</h3>
+                            <div class="chart-container">
+                                <canvas id="chartTopProduse"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3 class="chart-title">Comenzi pe zile</h3>
+                            <div class="chart-container">
+                                <canvas id="chartComenziZile"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Full Width -->
+                    <div class="chart-card full-width">
+                        <h3 class="chart-title">Venituri per produs (RON)</h3>
+                        <div class="chart-container">
+                            <canvas id="chartVenituriProduse"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Tables Row -->
+                    <div class="tables-row">
+                        <div class="table-card">
+                            <h3 class="table-title">Top 5 produse</h3>
+                            <table class="data-table" id="tableTopProduse">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Produs</th>
+                                        <th>Comenzi</th>
+                                        <th>%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="4">Se încarcă...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-card">
+                            <h3 class="table-title">Sumar financiar</h3>
+                            <table class="data-table" id="tableFinanciar">
+                                <thead>
+                                    <tr>
+                                        <th>Indicator</th>
+                                        <th>Valoare</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="2">Se încarcă...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Contact sidebar -->
+                <div class="contact-sidebar">
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <div>
+                            <a href="tel:+40219335">021.9335</a>
+                            <span class="contact-hours">(L-D 6-23)</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">✉️</span>
+                        <a href="mailto:contact@metrorex.ro">contact@metrorex.ro</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📅</span>
+                        Program transport călători: <br>Zilnic 05:00 - 23:00
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Stats Cards -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card highlight">
-                <div class="stat-value" id="statTotalComenzi">-</div>
-                <div class="stat-label">Total Comenzi</div>
-            </div>
-            <div class="stat-card highlight">
-                <div class="stat-value" id="statTotalVanzari">-</div>
-                <div class="stat-label">Total Vanzari (RON)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statTotalTVA">-</div>
-                <div class="stat-label">TVA Colectat (RON)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statMediaComanda">-</div>
-                <div class="stat-label">Media Comanda (RON)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statBilete">-</div>
-                <div class="stat-label">Bilete</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statAbonamente">-</div>
-                <div class="stat-label">Abonamente</div>
-            </div>
-        </div>
-        
-        <!-- Charts -->
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h3>📊 Bilete vs Abonamente</h3>
-                <div class="chart-container">
-                    <canvas id="chartBileteAbonamente"></canvas>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://card.metrorex.ro/#/faq">FAQS</a>
+                    <a href="https://card.metrorex.ro/#/contact">Contact</a>
+                    <a href="https://anpc.ro/">ANPC</a>
                 </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3>💳 Metode de Plata</h3>
-                <div class="chart-container">
-                    <canvas id="chartMetodePlata"></canvas>
+                <div class="footer-social">
+                     <a href="https://www.facebook.com/metrorexoficial.ro/"><img src="https://www.metrorex.ro/images/fb.svg" alt="Facebook"></a>
+                    <a href="https://www.instagram.com/metrorex_sa/"><img src="https://www.metrorex.ro/images/ig.svg" alt="Instagram"></a>
+                    <a href="https://www.linkedin.com/company/metrorex/"><img src="https://www.metrorex.ro/images/linkedin.svg" alt="LinkedIn"></a>
                 </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3>🎫 Top Produse Vandute</h3>
-                <div class="chart-container">
-                    <canvas id="chartTopProduse"></canvas>
-                </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3>📅 Comenzi pe Zile</h3>
-                <div class="chart-container">
-                    <canvas id="chartComenziZile"></canvas>
-                </div>
-            </div>
-            
-            <div class="chart-card full-width">
-                <h3>📈 Venituri per Produs (RON)</h3>
-                <div class="chart-container">
-                    <canvas id="chartVenituriProduse"></canvas>
+                <div class="footer-logos">
+                    <span class="payment-badge">MasterCard SecureCode</span>
+                    <span class="payment-badge">Verified by VISA</span>
                 </div>
             </div>
         </div>
-        
-        <!-- Tables -->
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h3>📋 Top 5 Produse</h3>
-                <table class="data-table" id="tableTopProduse">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Produs</th>
-                            <th>Comenzi</th>
-                            <th>%</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    </footer>
+    
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✅ Raport Generat</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
-            
-            <div class="chart-card">
-                <h3>💰 Sumar Financiar</h3>
-                <table class="data-table" id="tableFinanciar">
-                    <thead>
-                        <tr>
-                            <th>Indicator</th>
-                            <th>Valoare</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="modal-body">
+                <p id="modalMessage">Raportul a fost generat cu succes!</p>
+                <p id="modalStats"></p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="downloadReport()">📥 Descarcă PDF</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Închide</button>
+                </div>
             </div>
         </div>
     </div>
-    
-    <!-- Modal Success -->
-    <div class="modal" id="successModal">
-        <div class="modal-content">
-            <h2>✅ Raport Generat!</h2>
-            <p id="modalMessage">Raportul a fost generat cu succes.</p>
-            <p id="modalStats"></p>
-            <br>
-            <button class="btn btn-success" onclick="downloadReport()">📥 Descarca PDF</button>
-            <button class="btn btn-primary" onclick="closeModal()">Inchide</button>
-        </div>
-    </div>
-    
+
     <script>
+        const ZILE = ['Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă', 'Duminică'];
+        
         const NUME_PRODUSE = {
             'bilet_1_calatorii': 'Bilet 1 cal.',
             'bilet_2_calatorii': 'Bilet 2 cal.',
@@ -179,18 +227,16 @@
             'bilet_19_calatorii_s': 'Bilet 19 cal. (stud.)',
             'abonament_24': 'Abon. 24h',
             'abonament_72': 'Abon. 72h',
-            'abonament_saptamanal': 'Abon. saptamanal',
+            'abonament_saptamanal': 'Abon. săptămânal',
             'abonament_lunar': 'Abon. lunar',
             'abonament_lunar_elev': 'Abon. lunar elevi',
             'abonament_6l': 'Abon. 6 luni',
             'abonament_anual': 'Abon. anual',
-            'abonament_donatori': 'Abon. donatori',
+            'abonament_donatori': 'Abon. donatori'
         };
         
-        const ZILE = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
-        
         let charts = {};
-        let currentPdfFile = '';
+        let currentPdfFile = null;
         
         function showAlert(message, type = 'success') {
             const container = document.getElementById('alertContainer');
@@ -216,7 +262,7 @@
                     showAlert('Eroare: ' + data.error, 'error');
                 }
             } catch (error) {
-                showAlert('Eroare la incarcarea datelor: ' + error.message, 'error');
+                showAlert('Eroare la încărcarea datelor: ' + error.message, 'error');
             }
         }
         
@@ -377,12 +423,12 @@
             
             // Table Financiar
             const html2 = `
-                <tr><td>Total Vanzari</td><td><strong>${(stats.total_vanzari || 0).toFixed(2)} RON</strong></td></tr>
+                <tr><td>Total Vânzări</td><td><strong>${(stats.total_vanzari || 0).toFixed(2)} RON</strong></td></tr>
                 <tr><td>TVA Colectat (19%)</td><td>${(stats.total_tva || 0).toFixed(2)} RON</td></tr>
-                <tr><td>Vanzari fara TVA</td><td>${((stats.total_vanzari || 0) - (stats.total_tva || 0)).toFixed(2)} RON</td></tr>
-                <tr><td>Media Comanda</td><td>${(stats.media_comanda || 0).toFixed(2)} RON</td></tr>
-                <tr><td>Comanda Max</td><td>${(stats.max_comanda || 0).toFixed(2)} RON</td></tr>
-                <tr><td>Comanda Min</td><td>${(stats.min_comanda || 0).toFixed(2)} RON</td></tr>
+                <tr><td>Vânzări fără TVA</td><td>${((stats.total_vanzari || 0) - (stats.total_tva || 0)).toFixed(2)} RON</td></tr>
+                <tr><td>Media Comandă</td><td>${(stats.media_comanda || 0).toFixed(2)} RON</td></tr>
+                <tr><td>Comandă Max</td><td>${(stats.max_comanda || 0).toFixed(2)} RON</td></tr>
+                <tr><td>Comandă Min</td><td>${(stats.min_comanda || 0).toFixed(2)} RON</td></tr>
             `;
             document.querySelector('#tableFinanciar tbody').innerHTML = html2;
         }
@@ -390,7 +436,7 @@
         async function generateReport() {
             const btn = document.getElementById('btnGenerateReport');
             btn.disabled = true;
-            btn.textContent = '⏳ Se genereaza...';
+            btn.textContent = '⏳ Se generează...';
             
             try {
                 const response = await fetch('/api/generate-report', {
@@ -404,8 +450,8 @@
                     currentPdfFile = data.pdf_file;
                     document.getElementById('modalMessage').textContent = data.message;
                     document.getElementById('modalStats').textContent = 
-                        `Total comenzi analizate: ${data.stats.total_comenzi} | Vanzari: ${data.stats.total_vanzari.toFixed(2)} RON`;
-                    document.getElementById('successModal').style.display = 'block';
+                        `Total comenzi analizate: ${data.stats.total_comenzi} | Vânzări: ${data.stats.total_vanzari.toFixed(2)} RON`;
+                    document.getElementById('successModal').classList.add('active');
                 } else {
                     showAlert('Eroare: ' + data.error, 'error');
                 }
@@ -413,7 +459,7 @@
                 showAlert('Eroare: ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
-                btn.textContent = '📄 Genereaza Raport PDF';
+                btn.textContent = '📄 Generează Raport PDF';
             }
         }
         
@@ -425,14 +471,13 @@
         }
         
         function closeModal() {
-            document.getElementById('successModal').style.display = 'none';
+            document.getElementById('successModal').classList.remove('active');
         }
         
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                closeModal();
-            }
-        }
+        // Close modal on overlay click
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
         
         // Load data on page load
         loadData();
