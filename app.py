@@ -12,6 +12,7 @@ import generate_report as rp
 
 app = Flask(__name__, template_folder='.', static_folder='.')
 
+
 # MongoDB Atlas
 app.config["MONGO_URI"] = "mongodb+srv://root:student@cluster0.oyzbfhf.mongodb.net/proiect_metrorex?retryWrites=true&w=majority&appName=Cluster0&tlsAllowInvalidCertificates=true"
 mongo = PyMongo(app)

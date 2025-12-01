@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comenzi - Metrorex</title>
     <link rel="stylesheet" href="style.css">
+  
 </head>
 <body>
     <!-- Header -->
@@ -58,7 +59,7 @@
                     
                     <!-- Filters -->
                     <div class="controls">
-                        <input type="text" id="searchInput" placeholder="🔍 Caută după nume, email, nr. comandă...">
+                        <input type="text" id="searchInput" placeholder="Caută după nume, email, nr. comandă...">
                         <select id="filterProdus">
                             <option value="">Toate produsele</option>
                             <option value="bilet">Bilete</option>
@@ -70,7 +71,7 @@
                             <option value="cash">Numerar</option>
                             <option value="transfer">Transfer</option>
                         </select>
-                        <button onclick="loadComenzi()">🔄 Refresh</button>
+                        <button style="background-color: #4380bf" onclick="loadComenzi()">Refresh</button>
                     </div>
                     
                     <!-- Table -->
@@ -82,25 +83,20 @@
                 
                  <!-- Contact Sidebar -->
                 <div class="contact-sidebar">
-                    <div class="contact-card">
-                        <div class="contact-item">
-                            <span class="icon">📞</span>
-                            <div>
-                                <a href="tel:+40219335">021.9335</a>
-                                <span class="contact-hours">(L-D 6-23)</span>
-                            </div>
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <div>
+                            <a href="tel:+40219335">021.9335</a>
+                            <span class="contact-hours">(L-D 6-23)</span>
                         </div>
-                        <div class="contact-item">
-                            <span class="icon">✉️</span>
-                            <a href="mailto:contact@metrorex.ro">contact@metrorex.ro</a>
-                        </div>
-                        <div class="contact-item">
-                            <span class="icon">🚇</span>
-                            <div>
-                                Program transport:<br>
-                                <strong>Zilnic 05:00 - 23:00</strong>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">✉️</span>
+                        <a href="mailto:contact@metrorex.ro">contact@metrorex.ro</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📅</span>
+                        Program transport călători: <br>Zilnic 05:00 - 23:00
                     </div>
                 </div>
             </div>
@@ -111,7 +107,7 @@
     <div class="modal-overlay" id="detailModal">
         <div class="modal-box">
             <div class="modal-box-header">
-                <h2>📋 Detalii Comandă</h2>
+                <h2>Detalii</h2>
                 <button class="modal-close-btn" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-box-body" id="modalBody">
@@ -142,318 +138,319 @@
         </div>
     </footer>
 
-    <script>
-        const NUME_PRODUSE = {
-            'bilet_1_calatorii': 'Bilet 1 călătorie',
-            'bilet_2_calatorii': 'Bilet 2 călătorii',
-            'bilet_10_calatorii': 'Bilet 10 călătorii',
-            'bilet_19_calatorii_s': 'Bilet 19 căl. (studenți)',
-            'abonament_24': 'Abonament 24h',
-            'abonament_72': 'Abonament 72h',
-            'abonament_saptamanal': 'Abonament săptămânal',
-            'abonament_lunar': 'Abonament lunar',
-            'abonament_lunar_elev': 'Abonament lunar elevi',
-            'abonament_6l': 'Abonament 6 luni',
-            'abonament_anual': 'Abonament anual',
-            'abonament_donatori': 'Abonament donatori'
-        };
+     <script>
+
+const NUME_PRODUSE = {
+    'bilet_1_calatorii': 'Bilet 1 călătorie',
+    'bilet_2_calatorii': 'Bilet 2 călătorii',
+    'bilet_10_calatorii': 'Bilet 10 călătorii',
+    'bilet_19_calatorii_s': 'Bilet 19 căl. (studenți)',
+    'abonament_24': 'Abonament 24h',
+    'abonament_72': 'Abonament 72h',
+    'abonament_saptamanal': 'Abonament săptămânal',
+    'abonament_lunar': 'Abonament lunar',
+    'abonament_lunar_elev': 'Abonament lunar elevi',
+    'abonament_6l': 'Abonament 6 luni',
+    'abonament_anual': 'Abonament anual',
+    'abonament_donatori': 'Abonament donatori'
+};
+
+const METODA_TRADUCERE = {
+    'card': 'Card bancar',
+    'cash': 'Numerar',
+    'transfer': 'Transfer bancar'
+};
+
+let allComenzi = [];
+
+function showAlert(message, type = 'success') {
+    const container = document.getElementById('alertContainer');
+    container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    setTimeout(() => container.innerHTML = '', 5000);
+}
+
+async function loadComenzi() {
+    try {
+        const response = await fetch('/api/comenzi');
+        const data = await response.json();
         
-        const METODA_TRADUCERE = {
-            'card': 'Card bancar',
-            'cash': 'Numerar',
-            'transfer': 'Transfer bancar'
-        };
-        
-        let allComenzi = [];
-        
-        function showAlert(message, type = 'success') {
-            const container = document.getElementById('alertContainer');
-            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(() => container.innerHTML = '', 5000);
+        if (data.success !== false) {
+            allComenzi = Array.isArray(data) ? data : (data.comenzi || []);
+            updateStats();
+            renderTable(allComenzi);
         }
+    } catch (error) {
+        document.getElementById('tableContainer').innerHTML = 
+            '<div class="loading">Eroare la încărcarea datelor</div>';
+    }
+}
+
+function updateStats() {
+    let totalVanzari = 0;
+    let bilete = 0;
+    let abonamente = 0;
+    
+    allComenzi.forEach(c => {
+        totalVanzari += parseFloat(c.total) || 0;
+        if (c.tip_produs && c.tip_produs.includes('bilet')) bilete++;
+        else abonamente++;
+    });
+    
+    document.getElementById('totalComenzi').textContent = allComenzi.length;
+    document.getElementById('totalVanzari').textContent = totalVanzari.toFixed(2);
+    document.getElementById('totalBilete').textContent = bilete;
+    document.getElementById('totalAbonamente').textContent = abonamente;
+}
+
+function renderTable(comenzi) {
+    const container = document.getElementById('tableContainer');
+    
+    if (comenzi.length === 0) {
+        container.innerHTML = '<div class="loading">Nu există comenzi</div>';
+        return;
+    }
+    
+    let html = `<table>
+        <thead style="border-color: #4380bf; border: none; border-down: 1px;">
+            <tr>
+                <th>Nr. Comandă</th>
+                <th>Data</th>
+                <th>Client</th>
+                <th>Produs</th>
+                <th>Total</th>
+                <th>Metodă</th>
+                <th>Status</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody style="border-color: #4380bf; border: none; border-top: 1px;">`;
+    
+    comenzi.forEach(c => {
+        const data = c.data_comanda ? new Date(c.data_comanda).toLocaleDateString('ro-RO') : '-';
+        const produs = NUME_PRODUSE[c.tip_produs] || c.tip_produs;
+        const statusClass = c.status === 'finalizat' ? 'finalizat' : 
+                            c.status === 'anulat' ? 'anulat' : 'in_procesare';
         
-        async function loadComenzi() {
-            try {
-                const response = await fetch('/api/comenzi');
-                const data = await response.json();
-                
-                if (data.success !== false) {
-                    allComenzi = Array.isArray(data) ? data : (data.comenzi || []);
-                    updateStats();
-                    renderTable(allComenzi);
-                }
-            } catch (error) {
-                document.getElementById('tableContainer').innerHTML = 
-                    '<div class="loading">Eroare la încărcarea datelor</div>';
-            }
-        }
+        html += `
+            <tr>
+                <td><strong>${c.numar_comanda}</strong></td>
+                <td>${data}</td>
+                <td>${c.nume} ${c.prenume}</td>
+                <td>${produs}</td>
+                <td><strong>${parseFloat(c.total).toFixed(2)} RON</strong></td>
+                <td>${c.metoda_plata}</td>
+                <td><span class="status ${statusClass}">${c.status}</span></td>
+                <td>
+                    <button class="action-btn view" onclick='viewDetails(${JSON.stringify(c)})' title="Vezi detalii">👁️</button>
+                    <button class="action-btn pdf" onclick="downloadPDF('${c.numar_comanda}')" title="Descarcă PDF">📄</button>
+                    <button class="action-btn xml" onclick="downloadXML('${c.numar_comanda}')" title="Descarcă XML">📋</button>
+                    <button class="action-btn delete" onclick="deleteComanda('${c.numar_comanda}')" title="Șterge">🗑️</button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function filterComenzi() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const filterProdus = document.getElementById('filterProdus').value;
+    const filterMetoda = document.getElementById('filterMetoda').value;
+    
+    let filtered = allComenzi.filter(c => {
+        const matchSearch = !search || 
+            (c.nume && c.nume.toLowerCase().includes(search)) ||
+            (c.prenume && c.prenume.toLowerCase().includes(search)) ||
+            (c.email && c.email.toLowerCase().includes(search)) ||
+            (c.numar_comanda && c.numar_comanda.toLowerCase().includes(search));
         
-        function updateStats() {
-            let totalVanzari = 0;
-            let bilete = 0;
-            let abonamente = 0;
-            
-            allComenzi.forEach(c => {
-                totalVanzari += parseFloat(c.total) || 0;
-                if (c.tip_produs && c.tip_produs.includes('bilet')) bilete++;
-                else abonamente++;
-            });
-            
-            document.getElementById('totalComenzi').textContent = allComenzi.length;
-            document.getElementById('totalVanzari').textContent = totalVanzari.toFixed(2);
-            document.getElementById('totalBilete').textContent = bilete;
-            document.getElementById('totalAbonamente').textContent = abonamente;
-        }
+        const matchProdus = !filterProdus || 
+            (c.tip_produs && c.tip_produs.includes(filterProdus));
         
-        function renderTable(comenzi) {
-            const container = document.getElementById('tableContainer');
-            
-            if (comenzi.length === 0) {
-                container.innerHTML = '<div class="loading">Nu există comenzi</div>';
-                return;
-            }
-            
-            let html = `<table>
-                <thead>
-                    <tr>
-                        <th>Nr. Comandă</th>
-                        <th>Data</th>
-                        <th>Client</th>
-                        <th>Produs</th>
-                        <th>Total</th>
-                        <th>Metodă</th>
-                        <th>Status</th>
-                        <th>Acțiuni</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            comenzi.forEach(c => {
-                const data = c.data_comanda ? new Date(c.data_comanda).toLocaleDateString('ro-RO') : '-';
-                const produs = NUME_PRODUSE[c.tip_produs] || c.tip_produs;
-                const statusClass = c.status === 'finalizat' ? 'finalizat' : 
-                                   c.status === 'anulat' ? 'anulat' : 'in_procesare';
-                
-                html += `
-                    <tr>
-                        <td><strong>${c.numar_comanda}</strong></td>
-                        <td>${data}</td>
-                        <td>${c.nume} ${c.prenume}</td>
-                        <td>${produs}</td>
-                        <td><strong>${parseFloat(c.total).toFixed(2)} RON</strong></td>
-                        <td>${c.metoda_plata}</td>
-                        <td><span class="status ${statusClass}">${c.status}</span></td>
-                        <td>
-                            <button class="action-btn view" onclick='viewDetails(${JSON.stringify(c)})' title="Vezi detalii">👁️</button>
-                            <button class="action-btn pdf" onclick="downloadPDF('${c.numar_comanda}')" title="Descarcă PDF">📄</button>
-                            <button class="action-btn xml" onclick="downloadXML('${c.numar_comanda}')" title="Descarcă XML">📋</button>
-                            <button class="action-btn delete" onclick="deleteComanda('${c.numar_comanda}')" title="Șterge">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
+        const matchMetoda = !filterMetoda || c.metoda_plata === filterMetoda;
         
-        function filterComenzi() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const filterProdus = document.getElementById('filterProdus').value;
-            const filterMetoda = document.getElementById('filterMetoda').value;
-            
-            let filtered = allComenzi.filter(c => {
-                const matchSearch = !search || 
-                    (c.nume && c.nume.toLowerCase().includes(search)) ||
-                    (c.prenume && c.prenume.toLowerCase().includes(search)) ||
-                    (c.email && c.email.toLowerCase().includes(search)) ||
-                    (c.numar_comanda && c.numar_comanda.toLowerCase().includes(search));
-                
-                const matchProdus = !filterProdus || 
-                    (c.tip_produs && c.tip_produs.includes(filterProdus));
-                
-                const matchMetoda = !filterMetoda || c.metoda_plata === filterMetoda;
-                
-                return matchSearch && matchProdus && matchMetoda;
-            });
-            
-            renderTable(filtered);
-        }
+        return matchSearch && matchProdus && matchMetoda;
+    });
+    
+    renderTable(filtered);
+}
+
+function viewDetails(comanda) {
+    const produs = NUME_PRODUSE[comanda.tip_produs] || comanda.tip_produs;
+    const data = comanda.data_comanda ? new Date(comanda.data_comanda).toLocaleString('ro-RO') : '-';
+    const metoda = METODA_TRADUCERE[comanda.metoda_plata] || comanda.metoda_plata;
+    
+    document.getElementById('modalBody').innerHTML = `
+        <!-- Client Info -->
+        <div class="detail-section">
+            <div class="detail-section-title">👤 Informații Client</div>
+            <div class="detail-row">
+                <span class="detail-label">Nume complet</span>
+                <span class="detail-value">${comanda.nume} ${comanda.prenume}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">CNP</span>
+                <span class="detail-value">${comanda.cnp}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">${comanda.email}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Telefon</span>
+                <span class="detail-value">${comanda.telefon}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Adresă</span>
+                <span class="detail-value">${comanda.adresa || '-'}</span>
+            </div>
+        </div>
         
-        function viewDetails(comanda) {
-            const produs = NUME_PRODUSE[comanda.tip_produs] || comanda.tip_produs;
-            const data = comanda.data_comanda ? new Date(comanda.data_comanda).toLocaleString('ro-RO') : '-';
-            const metoda = METODA_TRADUCERE[comanda.metoda_plata] || comanda.metoda_plata;
-            
-            document.getElementById('modalBody').innerHTML = `
-                <!-- Client Info -->
-                <div class="detail-section">
-                    <div class="detail-section-title">👤 Informații Client</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Nume complet</span>
-                        <span class="detail-value">${comanda.nume} ${comanda.prenume}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">CNP</span>
-                        <span class="detail-value">${comanda.cnp}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Email</span>
-                        <span class="detail-value">${comanda.email}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Telefon</span>
-                        <span class="detail-value">${comanda.telefon}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Adresă</span>
-                        <span class="detail-value">${comanda.adresa || '-'}</span>
-                    </div>
-                </div>
-                
-                <!-- Order Info -->
-                <div class="detail-section">
-                    <div class="detail-section-title">🛒 Detalii Comandă</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Nr. Comandă</span>
-                        <span class="detail-value"><strong>${comanda.numar_comanda}</strong></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Data</span>
-                        <span class="detail-value">${data}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Produs</span>
-                        <span class="detail-value">${produs}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Cantitate</span>
-                        <span class="detail-value">${comanda.cantitate}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Preț unitar</span>
-                        <span class="detail-value">${parseFloat(comanda.pret_unitar || 0).toFixed(2)} RON</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Subtotal</span>
-                        <span class="detail-value">${parseFloat(comanda.subtotal || 0).toFixed(2)} RON</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">TVA (19%)</span>
-                        <span class="detail-value">${parseFloat(comanda.tva || 0).toFixed(2)} RON</span>
-                    </div>
-                </div>
-                
-                <!-- Total -->
-                <div class="total-box">
-                    <div class="total-label">Total de plată</div>
-                    <div class="total-value">${parseFloat(comanda.total).toFixed(2)} RON</div>
-                </div>
-                
-                <!-- Payment Info -->
-                <div class="detail-section">
-                    <div class="detail-section-title">💳 Plată & Status</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Metodă plată</span>
-                        <span class="detail-value">${metoda}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Status</span>
-                        <span class="detail-value">${comanda.status}</span>
-                    </div>
-                    ${comanda.observatii ? `
-                    <div class="detail-row">
-                        <span class="detail-label">Observații</span>
-                        <span class="detail-value">${comanda.observatii}</span>
-                    </div>
-                    ` : ''}
-                </div>
-                
-                <!-- Actions -->
-                <div class="modal-actions">
-                    <button class="btn btn-pdf" onclick="downloadPDF('${comanda.numar_comanda}')">
-                        📄 Descarcă PDF - Dovada Plată
-                    </button>
-                    <button class="btn btn-xml" onclick="downloadXML('${comanda.numar_comanda}')">
-                        📋 Descarcă XML - Date Comandă
-                    </button>
-                    <button class="btn btn-regenerate" onclick="generateProof('${comanda.numar_comanda}')">
-                        🔄 Regenerează Documente
-                    </button>
-                </div>
-            `;
-            
-            document.getElementById('detailModal').classList.add('active');
-        }
+        <!-- Order Info -->
+        <div class="detail-section">
+            <div class="detail-section-title">Detalii</div>
+            <div class="detail-row">
+                <span class="detail-label">Nr.</span>
+                <span class="detail-value"><strong>${comanda.numar_comanda}</strong></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Data</span>
+                <span class="detail-value">${data}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Produs</span>
+                <span class="detail-value">${produs}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Cantitate</span>
+                <span class="detail-value">${comanda.cantitate}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Preț unitar</span>
+                <span class="detail-value">${parseFloat(comanda.pret_unitar || 0).toFixed(2)} RON</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Subtotal</span>
+                <span class="detail-value">${parseFloat(comanda.subtotal || 0).toFixed(2)} RON</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">TVA (19%)</span>
+                <span class="detail-value">${parseFloat(comanda.tva || 0).toFixed(2)} RON</span>
+            </div>
+        </div>
         
-        function closeModal() {
-            document.getElementById('detailModal').classList.remove('active');
-        }
+        <!-- Total -->
+        <div class="total-box">
+            <div class="total-label">Total de plată</div>
+            <div class="total-value">${parseFloat(comanda.total).toFixed(2)} RON</div>
+        </div>
         
-        // Close on overlay click
-        document.getElementById('detailModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+        <!-- Payment Info -->
+        <div class="detail-section">
+            <div class="detail-section-title">Detalii tranzactie</div>
+            <div class="detail-row">
+                <span class="detail-label">Metodă plată</span>
+                <span class="detail-value">${metoda}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value">${comanda.status}</span>
+            </div>
+            ${comanda.observatii ? `
+            <div class="detail-row">
+                <span class="detail-label">Observații</span>
+                <span class="detail-value">${comanda.observatii}</span>
+            </div>
+            ` : ''}
+        </div>
+        
+        <!-- Actions -->
+        <div class="modal-actions">
+            <button class="btn btn-pdf" onclick="downloadPDF('${comanda.numar_comanda}')">
+                Descarcă PDF - Dovada Plată
+            </button>
+            <button class="btn btn-xml" onclick="downloadXML('${comanda.numar_comanda}')">
+                Descarcă XML - Date Comandă
+            </button>
+            
+        </div>
+    `;
+    
+    document.getElementById('detailModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('detailModal').classList.remove('active');
+}
+
+// Close on overlay click
+document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+function downloadPDF(numarComanda) {
+    window.location.href = `/download/dovada_plata_${numarComanda}.pdf`;
+}
+
+function downloadXML(numarComanda) {
+    window.location.href = `/download/comanda_${numarComanda}.xml`;
+}
+
+async function generateProof(numarComanda) {
+    try {
+        showAlert('Se generează documentele...', 'success');
+        
+        const response = await fetch(`/api/generate-payment-proof/${numarComanda}`, {
+            method: 'POST'
         });
+        const data = await response.json();
         
-        // Close on Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+        if (data.success) {
+            showAlert('Documente generate cu succes!', 'success');
+        } else {
+            showAlert('Eroare: ' + data.error, 'error');
+        }
+    } catch (error) {
+        showAlert('Eroare: ' + error.message, 'error');
+    }
+}
+
+async function deleteComanda(numarComanda) {
+    if (!confirm('Sigur doriți să ștergeți această comandă?')) return;
+    
+    try {
+        const response = await fetch(`/api/delete-comanda/${numarComanda}`, {
+            method: 'DELETE'
         });
+        const data = await response.json();
         
-        function downloadPDF(numarComanda) {
-            window.location.href = `/download/dovada_plata_${numarComanda}.pdf`;
+        if (data.success) {
+            showAlert('Comandă ștearsă cu succes!', 'success');
+            loadComenzi();
+        } else {
+            showAlert('Eroare: ' + data.error, 'error');
         }
-        
-        function downloadXML(numarComanda) {
-            window.location.href = `/download/comanda_${numarComanda}.xml`;
-        }
-        
-        async function generateProof(numarComanda) {
-            try {
-                showAlert('Se generează documentele...', 'success');
-                
-                const response = await fetch(`/api/generate-payment-proof/${numarComanda}`, {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    showAlert('Documente generate cu succes!', 'success');
-                } else {
-                    showAlert('Eroare: ' + data.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Eroare: ' + error.message, 'error');
-            }
-        }
-        
-        async function deleteComanda(numarComanda) {
-            if (!confirm('Sigur doriți să ștergeți această comandă?')) return;
-            
-            try {
-                const response = await fetch(`/api/delete-comanda/${numarComanda}`, {
-                    method: 'DELETE'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    showAlert('Comandă ștearsă cu succes!', 'success');
-                    loadComenzi();
-                } else {
-                    showAlert('Eroare: ' + data.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Eroare: ' + error.message, 'error');
-            }
-        }
-        
-        // Event listeners
-        document.getElementById('searchInput').addEventListener('input', filterComenzi);
-        document.getElementById('filterProdus').addEventListener('change', filterComenzi);
-        document.getElementById('filterMetoda').addEventListener('change', filterComenzi);
-        
-        // Load on page load
-        loadComenzi();
-    </script>
+    } catch (error) {
+        showAlert('Eroare: ' + error.message, 'error');
+    }
+}
+
+// Event listeners
+document.getElementById('searchInput').addEventListener('input', filterComenzi);
+document.getElementById('filterProdus').addEventListener('change', filterComenzi);
+document.getElementById('filterMetoda').addEventListener('change', filterComenzi);
+
+// Load on page load
+loadComenzi();
+     </script>
+  
 </body>
+
 </html>

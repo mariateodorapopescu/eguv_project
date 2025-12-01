@@ -226,271 +226,273 @@
             </div>
         </div>
     </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
 
-    <script>
+     <script>
         const ZILE = ['Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă', 'Duminică'];
         
-        const NUME_PRODUSE = {
-            'bilet_1_calatorii': 'Bilet 1 cal.',
-            'bilet_2_calatorii': 'Bilet 2 cal.',
-            'bilet_10_calatorii': 'Bilet 10 cal.',
-            'bilet_19_calatorii_s': 'Bilet 19 cal. (stud.)',
-            'abonament_24': 'Abon. 24h',
-            'abonament_72': 'Abon. 72h',
-            'abonament_saptamanal': 'Abon. săptămânal',
-            'abonament_lunar': 'Abon. lunar',
-            'abonament_lunar_elev': 'Abon. lunar elevi',
-            'abonament_6l': 'Abon. 6 luni',
-            'abonament_anual': 'Abon. anual',
-            'abonament_donatori': 'Abon. donatori'
-        };
+const NUME_PRODUSE = {
+    'bilet_1_calatorii': 'Bilet 1 cal.',
+    'bilet_2_calatorii': 'Bilet 2 cal.',
+    'bilet_10_calatorii': 'Bilet 10 cal.',
+    'bilet_19_calatorii_s': 'Bilet 19 cal. (stud.)',
+    'abonament_24': 'Abon. 24h',
+    'abonament_72': 'Abon. 72h',
+    'abonament_saptamanal': 'Abon. săptămânal',
+    'abonament_lunar': 'Abon. lunar',
+    'abonament_lunar_elev': 'Abon. lunar elevi',
+    'abonament_6l': 'Abon. 6 luni',
+    'abonament_anual': 'Abon. anual',
+    'abonament_donatori': 'Abon. donatori'
+};
+
+let charts = {};
+let currentPdfFile = null;
+
+function showAlert(message, type = 'success') {
+    const container = document.getElementById('alertContainer');
+    container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    setTimeout(() => container.innerHTML = '', 5000);
+}
+
+async function loadData() {
+    try {
+        const response = await fetch('/api/stats');
+        const data = await response.json();
         
-        let charts = {};
-        let currentPdfFile = null;
-        
-        function showAlert(message, type = 'success') {
-            const container = document.getElementById('alertContainer');
-            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(() => container.innerHTML = '', 5000);
+        if (data.success) {
+            updateStats(data.stats);
+            updateCharts(data.stats);
+            updateTables(data.stats);
+            
+            document.getElementById('lastUpdate').textContent = 
+                'Ultima actualizare: ' + new Date().toLocaleString('ro-RO');
+            
+            showAlert('Date actualizate cu succes!', 'success');
+        } else {
+            showAlert('Eroare: ' + data.error, 'error');
         }
-        
-        async function loadData() {
-            try {
-                const response = await fetch('/api/stats');
-                const data = await response.json();
-                
-                if (data.success) {
-                    updateStats(data.stats);
-                    updateCharts(data.stats);
-                    updateTables(data.stats);
-                    
-                    document.getElementById('lastUpdate').textContent = 
-                        'Ultima actualizare: ' + new Date().toLocaleString('ro-RO');
-                    
-                    showAlert('Date actualizate cu succes!', 'success');
-                } else {
-                    showAlert('Eroare: ' + data.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Eroare la încărcarea datelor: ' + error.message, 'error');
+    } catch (error) {
+        showAlert('Eroare la încărcarea datelor: ' + error.message, 'error');
+    }
+}
+
+function updateStats(stats) {
+    document.getElementById('statTotalComenzi').textContent = stats.total_comenzi || 0;
+    document.getElementById('statTotalVanzari').textContent = (stats.total_vanzari || 0).toFixed(2);
+    document.getElementById('statTotalTVA').textContent = (stats.total_tva || 0).toFixed(2);
+    document.getElementById('statMediaComanda').textContent = (stats.media_comanda || 0).toFixed(2);
+    document.getElementById('statBilete').textContent = stats.bilete_vs_abonamente?.bilete || 0;
+    document.getElementById('statAbonamente').textContent = stats.bilete_vs_abonamente?.abonamente || 0;
+}
+
+function updateCharts(stats) {
+    // Chart 1: Bilete vs Abonamente (Doughnut)
+    if (charts.bileteAbonamente) charts.bileteAbonamente.destroy();
+    const bileteData = [
+        stats.bilete_vs_abonamente?.bilete || 0, 
+        stats.bilete_vs_abonamente?.abonamente || 0
+    ];
+    charts.bileteAbonamente = new Chart(document.getElementById('chartBileteAbonamente'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Bilete', 'Abonamente'],
+            datasets: [{
+                data: bileteData,
+                backgroundColor: ['#4380bf', '#4300bf'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
             }
         }
-        
-        function updateStats(stats) {
-            document.getElementById('statTotalComenzi').textContent = stats.total_comenzi || 0;
-            document.getElementById('statTotalVanzari').textContent = (stats.total_vanzari || 0).toFixed(2);
-            document.getElementById('statTotalTVA').textContent = (stats.total_tva || 0).toFixed(2);
-            document.getElementById('statMediaComanda').textContent = (stats.media_comanda || 0).toFixed(2);
-            document.getElementById('statBilete').textContent = stats.bilete_vs_abonamente?.bilete || 0;
-            document.getElementById('statAbonamente').textContent = stats.bilete_vs_abonamente?.abonamente || 0;
+    });
+    
+    // Chart 2: Metode de Plata (Bar)
+    if (charts.metodePlata) charts.metodePlata.destroy();
+    const metode = stats.metode_plata || {};
+    const metodeLabels = Object.keys(metode).map(m => {
+        return m === 'card' ? 'Card' : m === 'cash' ? 'Numerar' : 'Transfer';
+    });
+    charts.metodePlata = new Chart(document.getElementById('chartMetodePlata'), {
+        type: 'bar',
+        data: {
+            labels: metodeLabels,
+            datasets: [{
+                label: 'Comenzi',
+                data: Object.values(metode),
+                backgroundColor: ['#4380bf', '#4380bf', '#4380bf'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
         }
-        
-        function updateCharts(stats) {
-            // Chart 1: Bilete vs Abonamente (Doughnut)
-            if (charts.bileteAbonamente) charts.bileteAbonamente.destroy();
-            const bileteData = [
-                stats.bilete_vs_abonamente?.bilete || 0, 
-                stats.bilete_vs_abonamente?.abonamente || 0
-            ];
-            charts.bileteAbonamente = new Chart(document.getElementById('chartBileteAbonamente'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Bilete', 'Abonamente'],
-                    datasets: [{
-                        data: bileteData,
-                        backgroundColor: ['#4380bf', '#4300bf'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
-            
-            // Chart 2: Metode de Plata (Bar)
-            if (charts.metodePlata) charts.metodePlata.destroy();
-            const metode = stats.metode_plata || {};
-            const metodeLabels = Object.keys(metode).map(m => {
-                return m === 'card' ? 'Card' : m === 'cash' ? 'Numerar' : 'Transfer';
-            });
-            charts.metodePlata = new Chart(document.getElementById('chartMetodePlata'), {
-                type: 'bar',
-                data: {
-                    labels: metodeLabels,
-                    datasets: [{
-                        label: 'Comenzi',
-                        data: Object.values(metode),
-                        backgroundColor: ['#4380bf', '#4380bf', '#4380bf'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-            
-            // Chart 3: Top Produse (Horizontal Bar)
-            if (charts.topProduse) charts.topProduse.destroy();
-            const produse = stats.produse || {};
-            const produseSorted = Object.entries(produse)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 6);
-            charts.topProduse = new Chart(document.getElementById('chartTopProduse'), {
-                type: 'bar',
-                data: {
-                    labels: produseSorted.map(p => NUME_PRODUSE[p[0]] || p[0]),
-                    datasets: [{
-                        label: 'Comenzi',
-                        data: produseSorted.map(p => p[1]),
-                        backgroundColor: '#4380bf',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true } }
-                }
-            });
-            
-            // Chart 4: Comenzi pe Zile (Line)
-            if (charts.comenziZile) charts.comenziZile.destroy();
-            const comenziPerZi = stats.comenzi_per_zi || [0,0,0,0,0,0,0];
-            charts.comenziZile = new Chart(document.getElementById('chartComenziZile'), {
-                type: 'line',
-                data: {
-                    labels: ZILE,
-                    datasets: [{
-                        label: 'Comenzi',
-                        data: comenziPerZi,
-                        borderColor: '#4380bf',
-                        backgroundColor: 'rgba(0, 102, 204, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-            
-            // Chart 5: Venituri per Produs (Bar)
-            if (charts.venituriProduse) charts.venituriProduse.destroy();
-            const vanzari = stats.vanzari_per_produs || {};
-            const venituriSorted = Object.entries(vanzari)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 8);
-            charts.venituriProduse = new Chart(document.getElementById('chartVenituriProduse'), {
-                type: 'bar',
-                data: {
-                    labels: venituriSorted.map(p => NUME_PRODUSE[p[0]] || p[0]),
-                    datasets: [{
-                        label: 'Venituri (RON)',
-                        data: venituriSorted.map(p => p[1].toFixed(2)),
-                        backgroundColor: '#4380bf',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
+    });
+    
+    // Chart 3: Top Produse (Horizontal Bar)
+    if (charts.topProduse) charts.topProduse.destroy();
+    const produse = stats.produse || {};
+    const produseSorted = Object.entries(produse)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 6);
+    charts.topProduse = new Chart(document.getElementById('chartTopProduse'), {
+        type: 'bar',
+        data: {
+            labels: produseSorted.map(p => NUME_PRODUSE[p[0]] || p[0]),
+            datasets: [{
+                label: 'Comenzi',
+                data: produseSorted.map(p => p[1]),
+                backgroundColor: '#4380bf',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true } }
         }
-        
-        function updateTables(stats) {
-            // Table Top Produse
-            const produse = stats.produse || {};
-            const produseSorted = Object.entries(produse)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-            
-            let html1 = '';
-            produseSorted.forEach((p, i) => {
-                const pct = stats.total_comenzi > 0 ? (p[1] / stats.total_comenzi * 100).toFixed(1) : 0;
-                html1 += `<tr>
-                    <td>${i + 1}</td>
-                    <td>${NUME_PRODUSE[p[0]] || p[0]}</td>
-                    <td>${p[1]}</td>
-                    <td>${pct}%</td>
-                </tr>`;
-            });
-            document.querySelector('#tableTopProduse tbody').innerHTML = html1 || '<tr><td colspan="4">Nu sunt date</td></tr>';
-            
-            // Table Financiar
-            const html2 = `
-                <tr><td>Total Vânzări</td><td><strong>${(stats.total_vanzari || 0).toFixed(2)} RON</strong></td></tr>
-                <tr><td>TVA Colectat (19%)</td><td>${(stats.total_tva || 0).toFixed(2)} RON</td></tr>
-                <tr><td>Vânzări fără TVA</td><td>${((stats.total_vanzari || 0) - (stats.total_tva || 0)).toFixed(2)} RON</td></tr>
-                <tr><td>Media Comandă</td><td>${(stats.media_comanda || 0).toFixed(2)} RON</td></tr>
-                <tr><td>Comandă Max</td><td>${(stats.max_comanda || 0).toFixed(2)} RON</td></tr>
-                <tr><td>Comandă Min</td><td>${(stats.min_comanda || 0).toFixed(2)} RON</td></tr>
-            `;
-            document.querySelector('#tableFinanciar tbody').innerHTML = html2;
+    });
+    
+    // Chart 4: Comenzi pe Zile (Line)
+    if (charts.comenziZile) charts.comenziZile.destroy();
+    const comenziPerZi = stats.comenzi_per_zi || [0,0,0,0,0,0,0];
+    charts.comenziZile = new Chart(document.getElementById('chartComenziZile'), {
+        type: 'line',
+        data: {
+            labels: ZILE,
+            datasets: [{
+                label: 'Comenzi',
+                data: comenziPerZi,
+                borderColor: '#4380bf',
+                backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
         }
-        
-        async function generateReport() {
-            const btn = document.getElementById('btnGenerateReport');
-            btn.disabled = true;
-            btn.textContent = '⏳ Se generează...';
-            
-            try {
-                const response = await fetch('/api/generate-report', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    currentPdfFile = data.pdf_file;
-                    document.getElementById('modalMessage').textContent = data.message;
-                    document.getElementById('modalStats').textContent = 
-                        `Total comenzi analizate: ${data.stats.total_comenzi} | Vânzări: ${data.stats.total_vanzari.toFixed(2)} RON`;
-                    document.getElementById('successModal').classList.add('active');
-                } else {
-                    showAlert('Eroare: ' + data.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Eroare: ' + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '📄 Generează Raport PDF';
-            }
+    });
+    
+    // Chart 5: Venituri per Produs (Bar)
+    if (charts.venituriProduse) charts.venituriProduse.destroy();
+    const vanzari = stats.vanzari_per_produs || {};
+    const venituriSorted = Object.entries(vanzari)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8);
+    charts.venituriProduse = new Chart(document.getElementById('chartVenituriProduse'), {
+        type: 'bar',
+        data: {
+            labels: venituriSorted.map(p => NUME_PRODUSE[p[0]] || p[0]),
+            datasets: [{
+                label: 'Venituri (RON)',
+                data: venituriSorted.map(p => p[1].toFixed(2)),
+                backgroundColor: '#4380bf',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
         }
-        
-        function downloadReport() {
-            if (currentPdfFile) {
-                window.location.href = '/download/' + currentPdfFile;
-                closeModal();
-            }
-        }
-        
-        function closeModal() {
-            document.getElementById('successModal').classList.remove('active');
-        }
-        
-        // Close modal on overlay click
-        document.getElementById('successModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+    });
+}
+
+function updateTables(stats) {
+    // Table Top Produse
+    const produse = stats.produse || {};
+    const produseSorted = Object.entries(produse)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    let html1 = '';
+    produseSorted.forEach((p, i) => {
+        const pct = stats.total_comenzi > 0 ? (p[1] / stats.total_comenzi * 100).toFixed(1) : 0;
+        html1 += `<tr>
+            <td>${i + 1}</td>
+            <td>${NUME_PRODUSE[p[0]] || p[0]}</td>
+            <td>${p[1]}</td>
+            <td>${pct}%</td>
+        </tr>`;
+    });
+    document.querySelector('#tableTopProduse tbody').innerHTML = html1 || '<tr><td colspan="4">Nu sunt date</td></tr>';
+    
+    // Table Financiar
+    const html2 = `
+        <tr><td>Total Vânzări</td><td><strong>${(stats.total_vanzari || 0).toFixed(2)} RON</strong></td></tr>
+        <tr><td>TVA Colectat (19%)</td><td>${(stats.total_tva || 0).toFixed(2)} RON</td></tr>
+        <tr><td>Vânzări fără TVA</td><td>${((stats.total_vanzari || 0) - (stats.total_tva || 0)).toFixed(2)} RON</td></tr>
+        <tr><td>Media Comandă</td><td>${(stats.media_comanda || 0).toFixed(2)} RON</td></tr>
+        <tr><td>Comandă Max</td><td>${(stats.max_comanda || 0).toFixed(2)} RON</td></tr>
+        <tr><td>Comandă Min</td><td>${(stats.min_comanda || 0).toFixed(2)} RON</td></tr>
+    `;
+    document.querySelector('#tableFinanciar tbody').innerHTML = html2;
+}
+
+async function generateReport() {
+    const btn = document.getElementById('btnGenerateReport');
+    btn.disabled = true;
+    btn.textContent = '⏳ Se generează...';
+    
+    try {
+        const response = await fetch('/api/generate-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
         });
         
-        // Load data on page load
-        loadData();
-    </script>
+        const data = await response.json();
+        
+        if (data.success) {
+            currentPdfFile = data.pdf_file;
+            document.getElementById('modalMessage').textContent = data.message;
+            document.getElementById('modalStats').textContent = 
+                `Total comenzi analizate: ${data.stats.total_comenzi} | Vânzări: ${data.stats.total_vanzari.toFixed(2)} RON`;
+            document.getElementById('successModal').classList.add('active');
+        } else {
+            showAlert('Eroare: ' + data.error, 'error');
+        }
+    } catch (error) {
+        showAlert('Eroare: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '📄 Generează Raport PDF';
+    }
+}
+
+function downloadReport() {
+    if (currentPdfFile) {
+        window.location.href = '/download/' + currentPdfFile;
+        closeModal();
+    }
+}
+
+function closeModal() {
+    document.getElementById('successModal').classList.remove('active');
+}
+
+// Close modal on overlay click
+document.getElementById('successModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// Load data on page load
+loadData();
+     </script>
 </body>
 </html>

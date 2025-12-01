@@ -288,373 +288,376 @@
             </div>
         </div>
     </div>
-
+   
     <script>
-        // Modal functions
-        function openCardModal() {
-            document.getElementById('cardModal').classList.add('active');
-        }
-        
-        function closeCardModal() {
-            document.getElementById('cardModal').classList.remove('active');
-        }
-        
-        // Close modal on overlay click
-        document.getElementById('cardModal').addEventListener('click', function(e) {
-            if (e.target === this) closeCardModal();
+         // Modal functions
+function openCardModal() {
+    document.getElementById('cardModal').classList.add('active');
+}
+
+function closeCardModal() {
+    document.getElementById('cardModal').classList.remove('active');
+}
+
+// Close modal on overlay click
+document.getElementById('cardModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCardModal();
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeCardModal();
+});
+
+// Preturi produse
+const PRICES = {
+    'bilet_1_calatorii': 5.00,
+    'bilet_2_calatorii': 10.00,
+    'bilet_10_calatorii': 40.00,
+    'bilet_19_calatorii_s': 4.00,
+    'abonament_24': 12.00,
+    'abonament_72': 35.00,
+    'abonament_saptamanal': 45.00,
+    'abonament_lunar': 100.00,
+    'abonament_lunar_elev': 10.00,
+    'abonament_6l': 500.00,
+    'abonament_anual': 900.00,
+    'abonament_donatori': 50.00
+};
+
+// Produse pentru elevi/studenti
+const PRODUSE_ELEVI = ['bilet_19_calatorii_s', 'abonament_lunar_elev'];
+
+let currentPrices = {};
+
+function showAlert(message, type = 'success') {
+    const container = document.getElementById('alertContainer');
+    container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    setTimeout(() => container.innerHTML = '', 5000);
+}
+
+function showError(fieldId, message) {
+    const errorSpan = document.getElementById('error-' + fieldId);
+    if (errorSpan) {
+        errorSpan.textContent = message;
+        errorSpan.style.display = 'block';
+    }
+}
+
+function clearError(fieldId) {
+    const errorSpan = document.getElementById('error-' + fieldId);
+    if (errorSpan) {
+        errorSpan.textContent = '';
+        errorSpan.style.display = 'none';
+    }
+}
+
+function clearAllErrors() {
+    document.querySelectorAll('.error-msg').forEach(el => {
+        el.textContent = '';
+        el.style.display = 'none';
+    });
+}
+
+// Validare CNP
+function validateCNP(cnp) {
+    if (!/^\d{13}$/.test(cnp)) return false;
+    const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
+    let sum = 0;
+    for (let i = 0; i < 12; i++) {
+        sum += parseInt(cnp[i]) * weights[i];
+    }
+    let checkDigit = sum % 11;
+    if (checkDigit === 10) checkDigit = 1;
+    return checkDigit === parseInt(cnp[12]);
+}
+
+// Validare email
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Validare telefon
+function validatePhone(phone) {
+    return /^(07\d{8}|02\d{8}|03\d{8})$/.test(phone.replace(/\s/g, ''));
+}
+
+// Calcul pret
+async function calculatePrice() {
+    const tipProdus = document.getElementById('tip_produs').value;
+    const cantitate = parseInt(document.getElementById('cantitate').value) || 1;
+    
+    // Show/hide conditii elev
+    const conditiiElev = document.getElementById('conditii-elev');
+    if (PRODUSE_ELEVI.includes(tipProdus)) {
+        conditiiElev.style.display = 'block';
+    } else {
+        conditiiElev.style.display = 'none';
+    }
+    
+    if (!tipProdus) {
+        document.getElementById('pretUnitar').textContent = '0.00 RON';
+        document.getElementById('subtotal').textContent = '0.00 RON';
+        document.getElementById('tva').textContent = '0.00 RON';
+        document.getElementById('total').textContent = '0.00 RON';
+        return;
+    }
+    
+    try {
+        const response = await fetch('/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tip_produs: tipProdus, cantitate: cantitate })
         });
         
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeCardModal();
-        });
+        const data = await response.json();
         
-        // Preturi produse
-        const PRICES = {
-            'bilet_1_calatorii': 5.00,
-            'bilet_2_calatorii': 10.00,
-            'bilet_10_calatorii': 40.00,
-            'bilet_19_calatorii_s': 4.00,
-            'abonament_24': 12.00,
-            'abonament_72': 35.00,
-            'abonament_saptamanal': 45.00,
-            'abonament_lunar': 100.00,
-            'abonament_lunar_elev': 10.00,
-            'abonament_6l': 500.00,
-            'abonament_anual': 900.00,
-            'abonament_donatori': 50.00
+        if (data.error) {
+            showAlert(data.error, 'error');
+            return;
+        }
+        
+        currentPrices = data;
+        
+        document.getElementById('pretUnitar').textContent = data.pret_unitar.toFixed(2) + ' RON';
+        document.getElementById('subtotal').textContent = data.subtotal.toFixed(2) + ' RON';
+        document.getElementById('tva').textContent = data.tva.toFixed(2) + ' RON';
+        document.getElementById('total').textContent = data.total.toFixed(2) + ' RON';
+        
+        // Update hidden fields
+        document.getElementById('pret_unitar_val').value = data.pret_unitar;
+        document.getElementById('subtotal_val').value = data.subtotal;
+        document.getElementById('tva_val').value = data.tva;
+        document.getElementById('total_val').value = data.total;
+        
+    } catch (error) {
+        showAlert('Eroare la calculul prețului: ' + error.message, 'error');
+    }
+}
+
+// Event listeners pentru calcul pret
+document.getElementById('tip_produs').addEventListener('change', calculatePrice);
+document.getElementById('cantitate').addEventListener('change', calculatePrice);
+document.getElementById('cantitate').addEventListener('input', calculatePrice);
+
+// Validare in timp real
+document.getElementById('cnp').addEventListener('blur', function() {
+    if (this.value && !validateCNP(this.value)) {
+        showError('cnp', 'CNP invalid! Trebuie să conțină 13 cifre și să fie valid.');
+    } else {
+        clearError('cnp');
+    }
+});
+
+document.getElementById('email').addEventListener('blur', function() {
+    if (this.value && !validateEmail(this.value)) {
+        showError('email', 'Adresa de email nu este validă!');
+    } else {
+        clearError('email');
+    }
+});
+
+document.getElementById('telefon').addEventListener('blur', function() {
+    if (this.value && !validatePhone(this.value)) {
+        showError('telefon', 'Numărul de telefon nu este valid! (ex: 07xxxxxxxx)');
+    } else {
+        clearError('telefon');
+    }
+});
+
+document.getElementById('cantitate').addEventListener('blur', function() {
+    const val = parseInt(this.value);
+    if (val < 1 || val > 50) {
+        showError('cantitate', 'Cantitatea trebuie să fie între 1 și 50!');
+    } else {
+        clearError('cantitate');
+    }
+});
+
+// Submit form
+document.getElementById('orderForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearAllErrors();
+    
+    let hasErrors = false;
+    
+    // Validare nume
+    const nume = document.getElementById('nume').value.trim();
+    if (!nume) {
+        showError('nume', 'Numele este obligatoriu!');
+        hasErrors = true;
+    }
+    
+    // Validare prenume
+    const prenume = document.getElementById('prenume').value.trim();
+    if (!prenume) {
+        showError('prenume', 'Prenumele este obligatoriu!');
+        hasErrors = true;
+    }
+    
+    // Validare CNP
+    const cnp = document.getElementById('cnp').value.trim();
+    if (!cnp) {
+        showError('cnp', 'CNP-ul este obligatoriu!');
+        hasErrors = true;
+    } else if (!validateCNP(cnp)) {
+        showError('cnp', 'CNP invalid!');
+        hasErrors = true;
+    }
+    
+    // Validare email
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+        showError('email', 'Email-ul este obligatoriu!');
+        hasErrors = true;
+    } else if (!validateEmail(email)) {
+        showError('email', 'Email invalid!');
+        hasErrors = true;
+    }
+    
+    // Validare telefon
+    const telefon = document.getElementById('telefon').value.trim();
+    if (!telefon) {
+        showError('telefon', 'Telefonul este obligatoriu!');
+        hasErrors = true;
+    } else if (!validatePhone(telefon)) {
+        showError('telefon', 'Telefon invalid!');
+        hasErrors = true;
+    }
+    
+    // Validare produs
+    const tipProdus = document.getElementById('tip_produs').value;
+    if (!tipProdus) {
+        showAlert('Selectați un produs!', 'error');
+        hasErrors = true;
+    }
+    
+    // Validare cantitate
+    const cantitate = parseInt(document.getElementById('cantitate').value);
+    if (cantitate < 1 || cantitate > 50) {
+        showError('cantitate', 'Cantitatea trebuie să fie între 1 și 50!');
+        hasErrors = true;
+    }
+    
+    // Validare checkbox elev
+    if (PRODUSE_ELEVI.includes(tipProdus)) {
+        const amLegitimatie = document.getElementById('am_legitimatie').checked;
+        if (!amLegitimatie) {
+            showAlert('Trebuie să confirmați că dețineți legitimație de elev/student!', 'error');
+            hasErrors = true;
+        }
+    }
+    
+    // Validare termeni
+    const acceptTermeni = document.getElementById('accept_termeni').checked;
+    if (!acceptTermeni) {
+        showError('termeni', 'Trebuie să acceptați termenii și condițiile!');
+        hasErrors = true;
+    }
+    
+    if (hasErrors) {
+        showAlert('Vă rugăm să corectați erorile din formular!', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Se procesează...';
+    
+    try {
+        const metodaPlata = document.querySelector('input[name="metoda_plata"]:checked').value;
+        
+        const formData = {
+            nume: nume,
+            prenume: prenume,
+            cnp: cnp,
+            email: email,
+            telefon: telefon,
+            adresa: document.getElementById('adresa').value || '',
+            tip_produs: tipProdus,
+            cantitate: cantitate,
+            metoda_plata: metodaPlata,
+            observatii: document.getElementById('observatii').value || '',
+            pret_unitar: currentPrices.pret_unitar,
+            subtotal: currentPrices.subtotal,
+            tva: currentPrices.tva,
+            total: currentPrices.total
         };
         
-        // Produse pentru elevi/studenti
-        const PRODUSE_ELEVI = ['bilet_19_calatorii_s', 'abonament_lunar_elev'];
-        
-        let currentPrices = {};
-        
-        function showAlert(message, type = 'success') {
-            const container = document.getElementById('alertContainer');
-            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(() => container.innerHTML = '', 5000);
-        }
-        
-        function showError(fieldId, message) {
-            const errorSpan = document.getElementById('error-' + fieldId);
-            if (errorSpan) {
-                errorSpan.textContent = message;
-                errorSpan.style.display = 'block';
-            }
-        }
-        
-        function clearError(fieldId) {
-            const errorSpan = document.getElementById('error-' + fieldId);
-            if (errorSpan) {
-                errorSpan.textContent = '';
-                errorSpan.style.display = 'none';
-            }
-        }
-        
-        function clearAllErrors() {
-            document.querySelectorAll('.error-msg').forEach(el => {
-                el.textContent = '';
-                el.style.display = 'none';
-            });
-        }
-        
-        // Validare CNP
-        function validateCNP(cnp) {
-            if (!/^\d{13}$/.test(cnp)) return false;
-            const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
-            let sum = 0;
-            for (let i = 0; i < 12; i++) {
-                sum += parseInt(cnp[i]) * weights[i];
-            }
-            let checkDigit = sum % 11;
-            if (checkDigit === 10) checkDigit = 1;
-            return checkDigit === parseInt(cnp[12]);
-        }
-        
-        // Validare email
-        function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-        
-        // Validare telefon
-        function validatePhone(phone) {
-            return /^(07\d{8}|02\d{8}|03\d{8})$/.test(phone.replace(/\s/g, ''));
-        }
-        
-        // Calcul pret
-        async function calculatePrice() {
-            const tipProdus = document.getElementById('tip_produs').value;
-            const cantitate = parseInt(document.getElementById('cantitate').value) || 1;
-            
-            // Show/hide conditii elev
-            const conditiiElev = document.getElementById('conditii-elev');
-            if (PRODUSE_ELEVI.includes(tipProdus)) {
-                conditiiElev.style.display = 'block';
-            } else {
-                conditiiElev.style.display = 'none';
-            }
-            
-            if (!tipProdus) {
-                document.getElementById('pretUnitar').textContent = '0.00 RON';
-                document.getElementById('subtotal').textContent = '0.00 RON';
-                document.getElementById('tva').textContent = '0.00 RON';
-                document.getElementById('total').textContent = '0.00 RON';
-                return;
-            }
-            
-            try {
-                const response = await fetch('/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tip_produs: tipProdus, cantitate: cantitate })
-                });
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    showAlert(data.error, 'error');
-                    return;
-                }
-                
-                currentPrices = data;
-                
-                document.getElementById('pretUnitar').textContent = data.pret_unitar.toFixed(2) + ' RON';
-                document.getElementById('subtotal').textContent = data.subtotal.toFixed(2) + ' RON';
-                document.getElementById('tva').textContent = data.tva.toFixed(2) + ' RON';
-                document.getElementById('total').textContent = data.total.toFixed(2) + ' RON';
-                
-                // Update hidden fields
-                document.getElementById('pret_unitar_val').value = data.pret_unitar;
-                document.getElementById('subtotal_val').value = data.subtotal;
-                document.getElementById('tva_val').value = data.tva;
-                document.getElementById('total_val').value = data.total;
-                
-            } catch (error) {
-                showAlert('Eroare la calculul prețului: ' + error.message, 'error');
-            }
-        }
-        
-        // Event listeners pentru calcul pret
-        document.getElementById('tip_produs').addEventListener('change', calculatePrice);
-        document.getElementById('cantitate').addEventListener('change', calculatePrice);
-        document.getElementById('cantitate').addEventListener('input', calculatePrice);
-        
-        // Validare in timp real
-        document.getElementById('cnp').addEventListener('blur', function() {
-            if (this.value && !validateCNP(this.value)) {
-                showError('cnp', 'CNP invalid! Trebuie să conțină 13 cifre și să fie valid.');
-            } else {
-                clearError('cnp');
-            }
+        const response = await fetch('/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
         });
         
-        document.getElementById('email').addEventListener('blur', function() {
-            if (this.value && !validateEmail(this.value)) {
-                showError('email', 'Adresa de email nu este validă!');
-            } else {
-                clearError('email');
-            }
-        });
+        const data = await response.json();
         
-        document.getElementById('telefon').addEventListener('blur', function() {
-            if (this.value && !validatePhone(this.value)) {
-                showError('telefon', 'Numărul de telefon nu este valid! (ex: 07xxxxxxxx)');
-            } else {
-                clearError('telefon');
-            }
-        });
-        
-        document.getElementById('cantitate').addEventListener('blur', function() {
-            const val = parseInt(this.value);
-            if (val < 1 || val > 50) {
-                showError('cantitate', 'Cantitatea trebuie să fie între 1 și 50!');
-            } else {
-                clearError('cantitate');
-            }
-        });
-        
-        // Submit form
-        document.getElementById('orderForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            clearAllErrors();
+        if (data.success) {
+            document.getElementById('formCard').style.display = 'none';
+            document.getElementById('orderNumber').textContent = data.numar_comanda;
             
-            let hasErrors = false;
+            // Show success details
+            const PRODUCT_NAMES = {
+                'bilet_1_calatorii': 'Bilet 1 călătorie',
+                'bilet_2_calatorii': 'Bilet 2 călătorii',
+                'bilet_10_calatorii': 'Bilet 10 călătorii',
+                'bilet_19_calatorii_s': 'Bilet 19 călătorii (studenți)',
+                'abonament_24': 'Abonament 24h',
+                'abonament_72': 'Abonament 72h',
+                'abonament_saptamanal': 'Abonament săptămânal',
+                'abonament_lunar': 'Abonament lunar',
+                'abonament_lunar_elev': 'Abonament lunar elevi/studenți',
+                'abonament_6l': 'Abonament 6 luni',
+                'abonament_anual': 'Abonament anual',
+                'abonament_donatori': 'Abonament donatori sânge'
+            };
             
-            // Validare nume
-            const nume = document.getElementById('nume').value.trim();
-            if (!nume) {
-                showError('nume', 'Numele este obligatoriu!');
-                hasErrors = true;
-            }
+            const METODA_NAMES = {
+                'card': 'Card Bancar',
+                'cash': 'Numerar',
+                'transfer': 'Transfer Bancar'
+            };
             
-            // Validare prenume
-            const prenume = document.getElementById('prenume').value.trim();
-            if (!prenume) {
-                showError('prenume', 'Prenumele este obligatoriu!');
-                hasErrors = true;
-            }
+            document.getElementById('successDetails').innerHTML = `
+                <div class="details-table">
+                    <div class="detail-row"><span>Client:</span><span>${prenume} ${nume}</span></div>
+                    <div class="detail-row"><span>Produs:</span><span>${PRODUCT_NAMES[tipProdus] || tipProdus}</span></div>
+                    <div class="detail-row"><span>Cantitate:</span><span>${cantitate}</span></div>
+                    <div class="detail-row"><span>Total:</span><span><strong>${currentPrices.total.toFixed(2)} RON</strong></span></div>
+                    <div class="detail-row"><span>Plată:</span><span>${METODA_NAMES[metodaPlata]}</span></div>
+                </div>
+            `;
             
-            // Validare CNP
-            const cnp = document.getElementById('cnp').value.trim();
-            if (!cnp) {
-                showError('cnp', 'CNP-ul este obligatoriu!');
-                hasErrors = true;
-            } else if (!validateCNP(cnp)) {
-                showError('cnp', 'CNP invalid!');
-                hasErrors = true;
-            }
+            document.getElementById('downloadPdf').href = '/download/' + data.pdf_file;
+            document.getElementById('downloadXml').href = '/download/' + data.xml_file;
+            document.getElementById('successBox').style.display = 'block';
             
-            // Validare email
-            const email = document.getElementById('email').value.trim();
-            if (!email) {
-                showError('email', 'Email-ul este obligatoriu!');
-                hasErrors = true;
-            } else if (!validateEmail(email)) {
-                showError('email', 'Email invalid!');
-                hasErrors = true;
-            }
-            
-            // Validare telefon
-            const telefon = document.getElementById('telefon').value.trim();
-            if (!telefon) {
-                showError('telefon', 'Telefonul este obligatoriu!');
-                hasErrors = true;
-            } else if (!validatePhone(telefon)) {
-                showError('telefon', 'Telefon invalid!');
-                hasErrors = true;
-            }
-            
-            // Validare produs
-            const tipProdus = document.getElementById('tip_produs').value;
-            if (!tipProdus) {
-                showAlert('Selectați un produs!', 'error');
-                hasErrors = true;
-            }
-            
-            // Validare cantitate
-            const cantitate = parseInt(document.getElementById('cantitate').value);
-            if (cantitate < 1 || cantitate > 50) {
-                showError('cantitate', 'Cantitatea trebuie să fie între 1 și 50!');
-                hasErrors = true;
-            }
-            
-            // Validare checkbox elev
-            if (PRODUSE_ELEVI.includes(tipProdus)) {
-                const amLegitimatie = document.getElementById('am_legitimatie').checked;
-                if (!amLegitimatie) {
-                    showAlert('Trebuie să confirmați că dețineți legitimație de elev/student!', 'error');
-                    hasErrors = true;
-                }
-            }
-            
-            // Validare termeni
-            const acceptTermeni = document.getElementById('accept_termeni').checked;
-            if (!acceptTermeni) {
-                showError('termeni', 'Trebuie să acceptați termenii și condițiile!');
-                hasErrors = true;
-            }
-            
-            if (hasErrors) {
-                showAlert('Vă rugăm să corectați erorile din formular!', 'error');
-                return;
-            }
-            
-            const btn = document.getElementById('btnSubmit');
-            btn.disabled = true;
-            btn.textContent = 'Se procesează...';
-            
-            try {
-                const metodaPlata = document.querySelector('input[name="metoda_plata"]:checked').value;
-                
-                const formData = {
-                    nume: nume,
-                    prenume: prenume,
-                    cnp: cnp,
-                    email: email,
-                    telefon: telefon,
-                    adresa: document.getElementById('adresa').value || '',
-                    tip_produs: tipProdus,
-                    cantitate: cantitate,
-                    metoda_plata: metodaPlata,
-                    observatii: document.getElementById('observatii').value || '',
-                    pret_unitar: currentPrices.pret_unitar,
-                    subtotal: currentPrices.subtotal,
-                    tva: currentPrices.tva,
-                    total: currentPrices.total
-                };
-                
-                const response = await fetch('/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('formCard').style.display = 'none';
-                    document.getElementById('orderNumber').textContent = data.numar_comanda;
-                    
-                    // Show success details
-                    const PRODUCT_NAMES = {
-                        'bilet_1_calatorii': 'Bilet 1 călătorie',
-                        'bilet_2_calatorii': 'Bilet 2 călătorii',
-                        'bilet_10_calatorii': 'Bilet 10 călătorii',
-                        'bilet_19_calatorii_s': 'Bilet 19 călătorii (studenți)',
-                        'abonament_24': 'Abonament 24h',
-                        'abonament_72': 'Abonament 72h',
-                        'abonament_saptamanal': 'Abonament săptămânal',
-                        'abonament_lunar': 'Abonament lunar',
-                        'abonament_lunar_elev': 'Abonament lunar elevi/studenți',
-                        'abonament_6l': 'Abonament 6 luni',
-                        'abonament_anual': 'Abonament anual',
-                        'abonament_donatori': 'Abonament donatori sânge'
-                    };
-                    
-                    const METODA_NAMES = {
-                        'card': 'Card Bancar',
-                        'cash': 'Numerar',
-                        'transfer': 'Transfer Bancar'
-                    };
-                    
-                    document.getElementById('successDetails').innerHTML = `
-                        <div class="details-table">
-                            <div class="detail-row"><span>Client:</span><span>${prenume} ${nume}</span></div>
-                            <div class="detail-row"><span>Produs:</span><span>${PRODUCT_NAMES[tipProdus] || tipProdus}</span></div>
-                            <div class="detail-row"><span>Cantitate:</span><span>${cantitate}</span></div>
-                            <div class="detail-row"><span>Total:</span><span><strong>${currentPrices.total.toFixed(2)} RON</strong></span></div>
-                            <div class="detail-row"><span>Plată:</span><span>${METODA_NAMES[metodaPlata]}</span></div>
-                        </div>
-                    `;
-                    
-                    document.getElementById('downloadPdf').href = '/download/' + data.pdf_file;
-                    document.getElementById('downloadXml').href = '/download/' + data.xml_file;
-                    document.getElementById('successBox').style.display = 'block';
-                    
-                    // Scroll to top
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    showAlert('Eroare: ' + data.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Eroare: ' + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'TRIMITE COMANDA';
-            }
-        });
-        
-        // Reset form
-        document.getElementById('btnReset').addEventListener('click', function() {
-            clearAllErrors();
-            document.getElementById('pretUnitar').textContent = '0.00 RON';
-            document.getElementById('subtotal').textContent = '0.00 RON';
-            document.getElementById('tva').textContent = '0.00 RON';
-            document.getElementById('total').textContent = '0.00 RON';
-            document.getElementById('conditii-elev').style.display = 'none';
-            currentPrices = {};
-        });
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            showAlert('Eroare: ' + data.error, 'error');
+        }
+    } catch (error) {
+        showAlert('Eroare: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'TRIMITE COMANDA';
+    }
+});
+
+// Reset form
+document.getElementById('btnReset').addEventListener('click', function() {
+    clearAllErrors();
+    document.getElementById('pretUnitar').textContent = '0.00 RON';
+    document.getElementById('subtotal').textContent = '0.00 RON';
+    document.getElementById('tva').textContent = '0.00 RON';
+    document.getElementById('total').textContent = '0.00 RON';
+    document.getElementById('conditii-elev').style.display = 'none';
+    currentPrices = {};
+});
+
+
+
     </script>
 </body>
 </html>
