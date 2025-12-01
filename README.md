@@ -6,13 +6,13 @@
 
 ## Caracteristici Principale
 
-| Icon | Modul | Descriere Detaliată |
+| Modul | Descriere Detaliată |
 | :---: | :--- | :--- |
-| **-** | **Punct de Vânzare (POS)** | Interfață simplă (`index.html`) pentru înregistrarea rapidă a vânzărilor de titluri de călătorie. |
-| **-** | **Generare Documente** | Emiți automat **Chitanțe PDF** și documente de **Audit XML** pentru fiecare tranzacție, asigurând conformitatea. |
-| **-** | **Dashboard Analitic** | Vizualizare centralizată a statisticilor cheie și a distribuției datelor. |
-| **-** | **Rapoarte Complexe** | Generare on-demand de **Rapoarte PDF detaliate** cu multiple grafice (ReportLab & Matplotlib) pe baza datelor din MongoDB. |
-| **-** | **Gestiune Comenzi** | Interfață dedicată (`comenzi.html`) pentru vizualizarea, filtrarea și ștergerea (CRUD) tranzacțiilor. |
+| **Punct de Vânzare (POS)** | Interfață simplă (`index.html`) pentru înregistrarea rapidă a vânzărilor de titluri de călătorie. |
+| **Generare Documente** | Emiți automat **Chitanțe PDF** și documente de **Audit XML** pentru fiecare tranzacție, asigurând conformitatea. |
+| **Dashboard Analitic** | Vizualizare centralizată a statisticilor cheie și a distribuției datelor. |
+| **Rapoarte Complexe** | Generare on-demand de **Rapoarte PDF detaliate** cu multiple grafice (ReportLab & Matplotlib) pe baza datelor din MongoDB. |
+| **Gestiune Comenzi** | Interfață dedicată (`comenzi.html`) pentru vizualizarea, filtrarea și ștergerea (CRUD) tranzacțiilor. |
 
 -----
 
@@ -79,7 +79,7 @@ python3 app.py
 
 ## Contribuție
 
-Feedback-ul tău este valoros\! Te rog să folosești funcționalitățile GitHub (Issues și Pull Requests) pentru a sugera îmbunătățiri.
+Feedback-ul este valoros\! A se folosi funcționalitățile GitHub (Issues și Pull Requests) pentru a sugera îmbunătățiri.
 
 -----
 
