@@ -3,332 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metrorex - Lista Comenzi</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-left: 4px solid #0066cc;
-            margin-bottom: 20px;
-        }
-        
-        header h1 {
-            color: #0066cc;
-            margin-bottom: 10px;
-        }
-        
-        nav {
-            margin-top: 10px;
-        }
-        
-        nav a {
-            color: #0066cc;
-            text-decoration: none;
-            margin-right: 20px;
-            padding: 5px 10px;
-            border: 1px solid #0066cc;
-        }
-        
-        nav a:hover {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .stats-bar {
-            background: white;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #ddd;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .stats-bar .stat {
-            text-align: center;
-            min-width: 120px;
-        }
-        
-        .stats-bar .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #0066cc;
-        }
-        
-        .stats-bar .stat-label {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .controls {
-            background: white;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .controls input, .controls select {
-            padding: 8px;
-            border: 1px solid #ccc;
-        }
-        
-        .controls input[type="text"] {
-            width: 250px;
-        }
-        
-        .controls button {
-            padding: 8px 16px;
-            background: #0066cc;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .controls button:hover {
-            background: #0055aa;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            background: white;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            min-width: 1000px;
-        }
-        
-        th, td {
-            padding: 12px 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            background: #0066cc;
-            color: white;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-        
-        tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .status {
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        
-        .status-finalizat { background: #d4edda; color: #155724; }
-        .status-in_procesare { background: #fff3cd; color: #856404; }
-        
-        .metoda {
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        
-        .metoda-card { background: #cce5ff; color: #004085; }
-        .metoda-cash { background: #d4edda; color: #155724; }
-        .metoda-transfer { background: #e2e3e5; color: #383d41; }
-        
-        .actions {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        
-        .actions button {
-            padding: 4px 8px;
-            font-size: 11px;
-            cursor: pointer;
-            border: none;
-            border-radius: 3px;
-            white-space: nowrap;
-        }
-        
-        .btn-view { background: #17a2b8; color: white; }
-        .btn-view:hover { background: #138496; }
-        
-        .btn-pdf { background: #dc3545; color: white; }
-        .btn-pdf:hover { background: #c82333; }
-        
-        .btn-xml { background: #28a745; color: white; }
-        .btn-xml:hover { background: #218838; }
-        
-        .btn-delete { background: #6c757d; color: white; }
-        .btn-delete:hover { background: #5a6268; }
-        
-        .btn-generate { background: #ffc107; color: #212529; }
-        .btn-generate:hover { background: #e0a800; }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        .empty {
-            text-align: center;
-            padding: 40px;
-            background: white;
-            color: #666;
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            background: white;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border-radius: 5px;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0066cc;
-        }
-        
-        .modal-header h2 {
-            color: #0066cc;
-        }
-        
-        .close-btn {
-            font-size: 28px;
-            cursor: pointer;
-            color: #666;
-        }
-        
-        .close-btn:hover {
-            color: #dc3545;
-        }
-        
-        .detail-row {
-            display: flex;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .detail-label {
-            width: 150px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .detail-value {
-            flex: 1;
-        }
-        
-        .total-row {
-            background: #e8f4f8;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 18px;
-            border-radius: 4px;
-        }
-        
-        .download-buttons {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .download-buttons button {
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .controls input[type="text"] {
-                width: 100%;
-            }
-        }
-    </style>
+    <title>Rapoarte - Metrorex</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="icon" type="image/png" href="https://www.metrorex.ro/images/logo.svg">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📋 Lista Comenzi Metrorex</h1>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span></span></div>
+                <span class="logo-text">METROREX</span>
+            </a>
+            
             <nav>
-                <a href="/">🏠 Formular</a>
-                <a href="/comenzi.html">📋 Comenzi</a>
-                <a href="/dashboard.html">📊 Dashboard</a>
+                <ul class="nav-menu">
+                    <li><a href="/">Acasă</a></li>
+                    <li><a href="/comenzi.html">Comenzi</a></li>
+                    <li><a href="/dashboard.html" class="active">Rapoarte</a></li>
+                    <li><a href="https://www.metrorex.ro/titluri-de-calatorie-tarife">Tarife</a></li>
+                </ul>
             </nav>
-        </header>
-        
-        <div id="alertContainer"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Rapoarte și Statistici</h1>
+            
+            <div id="alertContainer"></div>
+            
+            <div class="page-layout">
+                <div class="main-column">
+                    
+                    <!-- Actions bar -->
+                    <div class="form-section">
+                        <div class="actions-row">
+                            <span id="lastUpdate">Ultima actualizare: -</span>
+                            <div class="actions-buttons">
+                                <button class="btn btn-secondary" onclick="loadData()">Actualizează</button>
+                                <button class="btn btn-primary" id="btnGenerateReport" onclick="generateReport()">Generează Raport PDF</button>
+                            </div>
+                        </div>
+                    </div>
         
         <div class="stats-bar" id="statsBar">
             <div class="stat">
@@ -380,7 +99,67 @@
             <div id="modalBody"></div>
         </div>
     </div>
+    <!-- Contact sidebar -->
+                <div class="contact-sidebar">
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <div>
+                            <a href="tel:+40219335">021.9335</a>
+                            <span class="contact-hours">(L-D 6-23)</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">✉️</span>
+                        <a href="mailto:contact@metrorex.ro">contact@metrorex.ro</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📅</span>
+                        Program transport călători: <br>Zilnic 05:00 - 23:00
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://card.metrorex.ro/#/faq">FAQS</a>
+                    <a href="https://card.metrorex.ro/#/contact">Contact</a>
+                    <a href="https://anpc.ro/">ANPC</a>
+                </div>
+                <div class="footer-social">
+                     <a href="https://www.facebook.com/metrorexoficial.ro/"><img src="https://www.metrorex.ro/images/fb.svg" alt="Facebook"></a>
+                    <a href="https://www.instagram.com/metrorex_sa/"><img src="https://www.metrorex.ro/images/ig.svg" alt="Instagram"></a>
+                    <a href="https://www.linkedin.com/company/metrorex/"><img src="https://www.metrorex.ro/images/linkedin.svg" alt="LinkedIn"></a>
+                </div>
+                <div class="footer-logos">
+                    <span class="payment-badge">MasterCard SecureCode</span>
+                    <span class="payment-badge">Verified by VISA</span>
+                </div>
+            </div>
+        </div>
+    </footer>
     
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✅ Raport Generat</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Raportul a fost generat cu succes!</p>
+                <p id="modalStats"></p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="downloadReport()">📥 Descarcă PDF</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Închide</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         const NUME_PRODUSE = {
             'bilet_1_calatorii': 'Bilet 1 calatorie',

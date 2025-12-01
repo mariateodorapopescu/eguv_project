@@ -82,15 +82,19 @@
                     <!-- Charts Row 1 -->
                     <div class="charts-row">
                         <div class="chart-card">
-                            <h3 class="chart-title">Tipuri produse</h3>
+                            <div class="chart-header"><h3 class="chart-title">Tipuri produse</h3></div>
+                            <div class="chart-body">
                             <div class="chart-container">
                                 <canvas id="chartBileteAbonamente"></canvas>
                             </div>
+                            </div>
                         </div>
                         <div class="chart-card">
-                            <h3 class="chart-title">Metode de plată</h3>
+                            <div class="chart-header"><h3 class="chart-title">Metode de plată</h3></div>
+                            <div class="chart-body">
                             <div class="chart-container">
                                 <canvas id="chartMetodePlata"></canvas>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -98,31 +102,37 @@
                     <!-- Charts Row 2 -->
                     <div class="charts-row">
                         <div class="chart-card">
-                            <h3 class="chart-title">Top produse vândute</h3>
+                            <div class="chart-header"><h3 class="chart-title">Top produse vândute</h3></div>
+                            <div class="chart-body">
                             <div class="chart-container">
                                 <canvas id="chartTopProduse"></canvas>
                             </div>
+                            </div>
                         </div>
                         <div class="chart-card">
-                            <h3 class="chart-title">Comenzi pe zile</h3>
+                            <div class="chart-header"><h3 class="chart-title">Comenzi pe zile</h3></div>
+                            <div class="chart-body">
                             <div class="chart-container">
                                 <canvas id="chartComenziZile"></canvas>
+                            </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Chart Full Width -->
                     <div class="chart-card full-width">
-                        <h3 class="chart-title">Venituri per produs (RON)</h3>
+                        <div class="chart-header"><h3 class="chart-title">Venituri per produs (RON)</h3></div>
+                        <div class="chart-body">
                         <div class="chart-container">
                             <canvas id="chartVenituriProduse"></canvas>
+                        </div>
                         </div>
                     </div>
                     
                     <!-- Tables Row -->
                     <div class="tables-row">
                         <div class="table-card">
-                            <h3 class="table-title">Top 5 produse</h3>
+                           <div class="chart-header"><h3 class="table-title">Top 5 produse</h3></div> 
                             <table class="data-table" id="tableTopProduse">
                                 <thead>
                                     <tr>
@@ -138,7 +148,7 @@
                             </table>
                         </div>
                         <div class="table-card">
-                            <h3 class="table-title">Sumar financiar</h3>
+                            <div class="chart-header"><h3 class="table-title">Sumar financiar</h3></div>
                             <table class="data-table" id="tableFinanciar">
                                 <thead>
                                     <tr>
@@ -203,14 +213,14 @@
     <div class="modal-overlay" id="successModal">
         <div class="modal">
             <div class="modal-header">
-                <h3>✅ Raport Generat</h3>
+                <h3>Raport Generat</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <p id="modalMessage">Raportul a fost generat cu succes!</p>
                 <p id="modalStats"></p>
                 <div class="modal-actions">
-                    <button class="btn btn-primary" onclick="downloadReport()">📥 Descarcă PDF</button>
+                    <button class="btn btn-primary" onclick="downloadReport()">Descarcă PDF</button>
                     <button class="btn btn-secondary" onclick="closeModal()">Închide</button>
                 </div>
             </div>
@@ -288,7 +298,7 @@
                     labels: ['Bilete', 'Abonamente'],
                     datasets: [{
                         data: bileteData,
-                        backgroundColor: ['#0066cc', '#28a745'],
+                        backgroundColor: ['#4380bf', '#4300bf'],
                         borderWidth: 2
                     }]
                 },
@@ -314,7 +324,7 @@
                     datasets: [{
                         label: 'Comenzi',
                         data: Object.values(metode),
-                        backgroundColor: ['#0066cc', '#28a745', '#ffc107'],
+                        backgroundColor: ['#4380bf', '#4380bf', '#4380bf'],
                         borderWidth: 1
                     }]
                 },
@@ -339,7 +349,7 @@
                     datasets: [{
                         label: 'Comenzi',
                         data: produseSorted.map(p => p[1]),
-                        backgroundColor: '#0066cc',
+                        backgroundColor: '#4380bf',
                         borderWidth: 1
                     }]
                 },
@@ -362,7 +372,7 @@
                     datasets: [{
                         label: 'Comenzi',
                         data: comenziPerZi,
-                        borderColor: '#0066cc',
+                        borderColor: '#4380bf',
                         backgroundColor: 'rgba(0, 102, 204, 0.1)',
                         fill: true,
                         tension: 0.3
@@ -389,7 +399,7 @@
                     datasets: [{
                         label: 'Venituri (RON)',
                         data: venituriSorted.map(p => p[1].toFixed(2)),
-                        backgroundColor: '#28a745',
+                        backgroundColor: '#4380bf',
                         borderWidth: 1
                     }]
                 },
