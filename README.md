@@ -1,4 +1,4 @@
-# 🚀 EGUV\_project - Sistem Automatizat de Vânzări și Raportare Metrorex
+# Sistem Automatizat de Vânzări și Raportare Metrorex
 
 > O implementare completă a unui sistem de gestiune a tranzacțiilor, analiză de date și conformitate eGovernment, dezvoltat cu **Flask** și **MongoDB**.
 
