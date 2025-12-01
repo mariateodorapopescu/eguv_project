@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<ComandaMetrorex xmlns="http://metrorex.ro/comenzi" versiune="1.0">
+  <Comanda>
+    <NumarComanda>MTR20251201202914</NumarComanda>
+    <DataComanda>2025-12-01T20:29:14.742625</DataComanda>
+    <Status>finalizat</Status>
+  </Comanda>
+  <Client>
+    <Nume>Rebreanu</Nume>
+    <Prenume>Monica</Prenume>
+    <CNP>6011228090049</CNP>
+    <Email>popescumariateodora@yahoo.com</Email>
+    <Telefon>0723028220</Telefon>
+    <Adresa>Str. Principala nr. 23, Domnesti, Ilfov</Adresa>
+  </Client>
+  <Produs>
+    <TipProdus>bilet_19_calatorii_s</TipProdus>
+    <NumeProdus>Bilet 19 cal. (studenti)</NumeProdus>
+    <Cantitate>1</Cantitate>
+    <PretUnitar>4</PretUnitar>
+  </Produs>
+  <Financiar>
+    <Subtotal>4</Subtotal>
+    <TVA>0.76</TVA>
+    <CotaTVA>19%</CotaTVA>
+    <Total>4.76</Total>
+    <Moneda>RON</Moneda>
+  </Financiar>
+  <Plata>
+    <MetodaPlata>card</MetodaPlata>
+    <DataPlata>2025-12-01T20:29:14.745723</DataPlata>
+  </Plata>
+  <Observatii>dcfgv</Observatii>
+</ComandaMetrorex>

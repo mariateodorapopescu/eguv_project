@@ -3,390 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metrorex - Achizitie Bilete si Abonamente</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-left: 4px solid #0066cc;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        header h1 {
-            color: #0066cc;
-            margin-bottom: 10px;
-        }
-        
-        header p {
-            color: #666;
-        }
-        
-        nav {
-            margin-top: 15px;
-        }
-        
-        nav a {
-            color: #0066cc;
-            text-decoration: none;
-            margin-right: 20px;
-            padding: 8px 15px;
-            border: 1px solid #0066cc;
-            display: inline-block;
-        }
-        
-        nav a:hover {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .form-container {
-            background: white;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .form-section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .form-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        
-        .form-section h3 {
-            color: #0066cc;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .form-group {
-            flex: 1;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .form-group label span {
-            color: #dc3545;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 5px rgba(0,102,204,0.3);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .product-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        
-        .product-info p {
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .product-info .total {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0066cc;
-            border-top: 2px solid #0066cc;
-            padding-top: 10px;
-            margin-top: 10px;
-        }
-        
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .btn-submit:hover {
-            background: #0055aa;
-        }
-        
-        .btn-submit:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .success-box {
-            background: #d4edda;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .success-box h3 {
-            color: #155724;
-            margin-bottom: 10px;
-        }
-        
-        .success-box .order-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #0066cc;
-            margin: 15px 0;
-        }
-        
-        .success-box .download-links {
-            margin-top: 15px;
-        }
-        
-        .success-box .download-links a {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            background: #0066cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        
-        .success-box .download-links a:hover {
-            background: #0055aa;
-        }
-        
-        .success-box .download-links a.xml {
-            background: #28a745;
-        }
-        
-        .success-box .download-links a.xml:hover {
-            background: #218838;
-        }
-        
-        @media (max-width: 600px) {
-            .form-row {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <title>Metrorex - Cumpără</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🚇 Metrorex</h1>
-            <p>Sistem Electronic de Achizitie Bilete si Abonamente</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span></span></div>
+                <span class="logo-text">METROREX</span>
+            </a>
+            
             <nav>
-                <a href="/">🏠 Formular</a>
-                <a href="/comenzi.html">📋 Comenzi</a>
-                <a href="/dashboard.html">📊 Dashboard</a>
+                <ul class="nav-menu">
+                    <li><a href="/" class="active">Acasă</a></li>
+                    <li><a href="/comenzi.html">Comenzi</a></li>
+                    <li><a href="/dashboard.html">Rapoarte</a></li>
+                    <li><a href="https://www.metrorex.ro/titluri-de-calatorie-tarife">Tarife</a></li>
+                </ul>
             </nav>
-        </header>
-        
-        <div class="form-container">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Cumpără</h1>
+            
             <div id="alertContainer"></div>
             
-            <form id="orderForm">
-                <!-- Date personale -->
-                <div class="form-section">
-                    <h3>👤 Date Personale</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Nume <span>*</span></label>
-                            <input type="text" id="nume" name="nume" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Prenume <span>*</span></label>
-                            <input type="text" id="prenume" name="prenume" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>CNP <span>*</span></label>
-                            <input type="text" id="cnp" name="cnp" maxlength="13" required placeholder="13 cifre">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Email <span>*</span></label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Telefon <span>*</span></label>
-                            <input type="tel" id="telefon" name="telefon" required placeholder="07xxxxxxxx">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Adresa</label>
-                        <input type="text" id="adresa" name="adresa" placeholder="Optional">
-                    </div>
-                </div>
-                
-                <!-- Selectie produs -->
-                <div class="form-section">
-                    <h3>🎫 Selectie Produs</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Tip Produs <span>*</span></label>
-                            <select id="tip_produs" name="tip_produs" required>
-                                <option value="">-- Selecteaza --</option>
-                                <optgroup label="Bilete">
-                                    <option value="bilet_1_calatorii">Bilet 1 calatorie - 5.00 RON</option>
-                                    <option value="bilet_2_calatorii">Bilet 2 calatorii - 10.00 RON</option>
-                                    <option value="bilet_10_calatorii">Bilet 10 calatorii - 40.00 RON</option>
-                                    <option value="bilet_19_calatorii_s">Bilet 19 calatorii (studenti) - 4.00 RON</option>
-                                </optgroup>
-                                <optgroup label="Abonamente">
-                                    <option value="abonament_24">Abonament 24h - 12.00 RON</option>
-                                    <option value="abonament_72">Abonament 72h - 35.00 RON</option>
-                                    <option value="abonament_saptamanal">Abonament saptamanal - 45.00 RON</option>
-                                    <option value="abonament_lunar">Abonament lunar - 100.00 RON</option>
-                                    <option value="abonament_lunar_elev">Abonament lunar elevi - 10.00 RON</option>
-                                    <option value="abonament_6l">Abonament 6 luni - 500.00 RON</option>
-                                    <option value="abonament_anual">Abonament anual - 900.00 RON</option>
-                                    <option value="abonament_donatori">Abonament donatori sange - 50.00 RON</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Cantitate <span>*</span></label>
-                            <input type="number" id="cantitate" name="cantitate" min="1" max="100" value="1" required>
-                        </div>
+            <div class="page-layout">
+                <div class="form-container">
+                    <div class="form-card" id="formCard">
+                        
+                        <form id="orderForm">
+                            <!-- Sectiunea 1: Date Personale -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">1. Date Personale</h2>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nume <span class="required">*</span></label>
+                                        <input type="text" id="nume" name="nume" required>
+                                        <span id="error-nume" class="error-msg"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Prenume <span class="required">*</span></label>
+                                        <input type="text" id="prenume" name="prenume" required>
+                                        <span id="error-prenume" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>CNP <span class="required">*</span> (13 cifre)</label>
+                                        <input type="text" id="cnp" name="cnp" maxlength="13" placeholder="13 cifre" required>
+                                        <span id="error-cnp" class="error-msg"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email <span class="required">*</span></label>
+                                        <input type="email" id="email" name="email" required>
+                                        <span id="error-email" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Telefon <span class="required">*</span></label>
+                                        <input type="tel" id="telefon" name="telefon" placeholder="07xxxxxxxx" required>
+                                        <span id="error-telefon" class="error-msg"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Adresa (opțional)</label>
+                                        <input type="text" id="adresa" name="adresa" placeholder="Adresa de domiciliu">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sectiunea 2: Selectare Produs -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">2. Selectare Produs</h2>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tip Produs <span class="required">*</span></label>
+                                        <select id="tip_produs" name="tip_produs" required>
+                                            <option value="">-- Selectați tipul de produs --</option>
+                                            <optgroup label="Bilete">
+                                                <option value="bilet_1_calatorii" data-price="5.00">Bilet 1 călătorie - 5.00 RON</option>
+                                                <option value="bilet_2_calatorii" data-price="10.00">Bilet 2 călătorii - 10.00 RON</option>
+                                                <option value="bilet_10_calatorii" data-price="40.00">Bilet 10 călătorii - 40.00 RON</option>
+                                                <option value="bilet_19_calatorii_s" data-price="4.00">Bilet 19 călătorii (studenți) - 4.00 RON</option>
+                                            </optgroup>
+                                            <optgroup label="Abonamente Scurtă Durată">
+                                                <option value="abonament_24" data-price="12.00">Abonament 24 ore - 12.00 RON</option>
+                                                <option value="abonament_72" data-price="35.00">Abonament 72 ore - 35.00 RON</option>
+                                                <option value="abonament_saptamanal" data-price="45.00">Abonament săptămânal - 45.00 RON</option>
+                                            </optgroup>
+                                            <optgroup label="Abonamente Lungi">
+                                                <option value="abonament_lunar" data-price="100.00">Abonament lunar - 100.00 RON</option>
+                                                <option value="abonament_lunar_elev" data-price="10.00">Abonament lunar elevi/studenți - 10.00 RON</option>
+                                                <option value="abonament_6l" data-price="500.00">Abonament 6 luni - 500.00 RON</option>
+                                                <option value="abonament_anual" data-price="900.00">Abonament anual - 900.00 RON</option>
+                                            </optgroup>
+                                            <optgroup label="Abonamente Speciale">
+                                                <option value="abonament_donatori" data-price="50.00">Abonament donatori sânge - 50.00 RON</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cantitate <span class="required">*</span> (1-50)</label>
+                                        <input type="number" id="cantitate" name="cantitate" min="1" max="50" value="1" required>
+                                        <span id="error-cantitate" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Conditii elev/student -->
+                                <div id="conditii-elev" class="conditii-box" style="display: none;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="am_legitimatie" name="am_legitimatie">
+                                        <span>Confirm că dețin legitimație de elev/student validă</span>
+                                    </label>
+                                    <small class="warning-text">Veți fi obligat(ă) să prezentați legitimația la prima utilizare</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Sectiunea 3: Calcul Pret -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">3. Calcul Preț (AUTOMAT)</h2>
+                                
+                                <div class="price-table">
+                                    <div class="price-row">
+                                        <span>Preț unitar:</span>
+                                        <span id="pretUnitar">0.00 RON</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span>Subtotal (fără TVA):</span>
+                                        <span id="subtotal">0.00 RON</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span>TVA (19%):</span>
+                                        <span id="tva">0.00 RON</span>
+                                    </div>
+                                    <div class="price-row total">
+                                        <span>TOTAL:</span>
+                                        <span id="total">0.00 RON</span>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" id="pret_unitar_val" name="pret_unitar" value="0">
+                                <input type="hidden" id="subtotal_val" name="subtotal" value="0">
+                                <input type="hidden" id="tva_val" name="tva" value="0">
+                                <input type="hidden" id="total_val" name="total" value="0">
+                            </div>
+                            
+                            <!-- Sectiunea 4: Metoda de Plata -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">4. Metodă de Plată</h2>
+                                
+                                <div class="payment-options">
+                                    <label class="radio-label">
+                                        <input type="radio" name="metoda_plata" value="card" checked>
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-text">Card Bancar</span>
+                                    </label>
+                                    
+                                    <label class="radio-label">
+                                        <input type="radio" name="metoda_plata" value="cash">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-text">Numerar (la casele Metrorex)</span>
+                                    </label>
+                                    
+                                    <label class="radio-label">
+                                        <input type="radio" name="metoda_plata" value="transfer">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-text">Transfer Bancar la IBAN 123456789</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Sectiunea 5: Observatii -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">5. Observații</h2>
+                                
+                                <div class="form-group">
+                                    <label>Observații suplimentare (opțional)</label>
+                                    <textarea id="observatii" name="observatii" rows="3" placeholder="Introduceți observații suplimentare..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Termeni si conditii -->
+                            <div class="form-section terms-section">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="accept_termeni" required>
+                                    <span>Accept <a href="#" class="link-blue">termenii și condițiile</a> <span class="required">*</span></span>
+                                </label>
+                                <span id="error-termeni" class="error-msg"></span>
+                            </div>
+                            
+                            <!-- Butoane -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="btnSubmit">
+                                    Continuă>>
+                                </button>
+                                
+                            </div>
+                        </form>
                     </div>
                     
-                    <div class="product-info" id="productInfo" style="display: none;">
-                        <p><span>Pret unitar:</span> <span id="pretUnitar">0.00 RON</span></p>
-                        <p><span>Subtotal:</span> <span id="subtotal">0.00 RON</span></p>
-                        <p><span>TVA (19%):</span> <span id="tva">0.00 RON</span></p>
-                        <p class="total"><span>TOTAL:</span> <span id="total">0.00 RON</span></p>
+                    <!-- Success box -->
+                    <div class="success-box" id="successBox" style="display: none;">
+                        <div class="success-icon"></div>
+                        <h2>Comandă înregistrată cu succes!</h2>
+                        <p>Numărul comenzii:</p>
+                        <div class="order-number" id="orderNumber"></div>
+                        
+                        <div class="success-details" id="successDetails"></div>
+                        
+                        <div class="download-buttons">
+                            <a href="#" class="btn btn-primary" id="downloadPdf">Descarcă PDF</a>
+                            <a href="#" class="btn btn-primary" id="downloadXml">Descarcă XML</a>
+                        </div>
+                        <p style="margin-top: 30px;">
+                            <a href="/" class="btn btn-primary">Plasează o nouă comandă</a>
+                        </p>
                     </div>
                 </div>
                 
-                <!-- Metoda plata -->
-                <div class="form-section">
-                    <h3>💳 Metoda de Plata</h3>
-                    <div class="form-group">
-                        <label>Selecteaza metoda <span>*</span></label>
-                        <select id="metoda_plata" name="metoda_plata" required>
-                            <option value="">-- Selecteaza --</option>
-                            <option value="card">Card bancar</option>
-                            <option value="cash">Numerar (la ghiseu)</option>
-                            <option value="transfer">Transfer bancar</option>
-                        </select>
+                <!-- Contact sidebar -->
+                <div class="contact-sidebar">
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <div>
+                            <a href="tel:+40219335">021.9335</a>
+                            <span class="contact-hours">(L-D 6-23)</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">✉️</span>
+                        <a href="mailto:contact@metrorex.ro">contact@metrorex.ro</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📅</span>
+                        Program transport călători: <br>Zilnic 05:00 - 23:00
                     </div>
                 </div>
-                
-                <!-- Observatii -->
-                <div class="form-section">
-                    <h3>📝 Observatii</h3>
-                    <div class="form-group">
-                        <label>Observatii suplimentare</label>
-                        <textarea id="observatii" name="observatii" placeholder="Optional"></textarea>
-                    </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://card.metrorex.ro/#/faq">FAQS</a>
+                    <a href="https://card.metrorex.ro/#/contact">Contact</a>
+                    <a href="https://anpc.ro/">ANPC</a>
                 </div>
-                
-                <button type="submit" class="btn-submit" id="btnSubmit">
-                    📤 Trimite Comanda
-                </button>
-            </form>
-            
-            <div id="successBox" class="success-box" style="display: none;">
-                <h3>✅ Comanda inregistrata cu succes!</h3>
-                <p>Numar comanda:</p>
-                <div class="order-number" id="orderNumber"></div>
-                <div class="download-links">
-                    <a href="#" id="downloadPdf">📄 Descarca PDF - Dovada Plata</a>
-                    <a href="#" id="downloadXml" class="xml">📋 Descarca XML - Date Comanda</a>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/metrorexoficial.ro/"><img src="https://www.metrorex.ro/images/fb.svg" alt="Facebook"></a>
+                    <a href="https://www.instagram.com/metrorex_sa/"><img src="https://www.metrorex.ro/images/ig.svg" alt="Instagram"></a>
+                    <a href="https://www.linkedin.com/company/metrorex/"><img src="https://www.metrorex.ro/images/linkedin.svg" alt="LinkedIn"></a>
                 </div>
-                <p style="margin-top: 20px;">
-                    <a href="/" style="color: #0066cc;">Plaseaza o noua comanda</a>
-                </p>
+                <div class="footer-logos">
+                    <span class="payment-badge">MasterCard SecureCode</span>
+                    <span class="payment-badge">Verified by VISA</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Ce card? -->
+    <div class="modal-overlay" id="cardModal">
+        <div class="modal-card">
+            <div class="modal-header-simple">
+                <h3>Ce card?</h3>
+                <button class="modal-close" onclick="closeCardModal()">&times;</button>
+            </div>
+            <div class="modal-body-content">
+                <p>Doar înainte de prima cumpărare online a unui abonament, aveți nevoie de un card de abonat Metrorex pe care îl puteți obține de la orice casă de bilete cu 5 lei. Ulterior, abonamentul îl puteți încărca în fiecare lună exclusiv online. <a href="https://www.metrorex.ro/titluri-de-calatorie-tarife" class="link-blue">Detalii despre abonamente</a>.</p>
             </div>
         </div>
     </div>
-    
+
     <script>
+        // Modal functions
+        function openCardModal() {
+            document.getElementById('cardModal').classList.add('active');
+        }
+        
+        function closeCardModal() {
+            document.getElementById('cardModal').classList.remove('active');
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('cardModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCardModal();
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeCardModal();
+        });
+        
+        // Preturi produse
         const PRICES = {
-            'bilet_1_calatorii': 5.0,
-            'bilet_2_calatorii': 10.0,
-            'bilet_10_calatorii': 40.0,
-            'abonament_24': 12.0,
-            'abonament_72': 35.0,
-            'abonament_saptamanal': 45.0,
-            'abonament_lunar': 100.0,
-            'abonament_lunar_elev': 10.0,
-            'abonament_6l': 500.0,
-            'abonament_anual': 900.0,
-            'abonament_donatori': 50.0,
-            'bilet_19_calatorii_s': 4.0,
+            'bilet_1_calatorii': 5.00,
+            'bilet_2_calatorii': 10.00,
+            'bilet_10_calatorii': 40.00,
+            'bilet_19_calatorii_s': 4.00,
+            'abonament_24': 12.00,
+            'abonament_72': 35.00,
+            'abonament_saptamanal': 45.00,
+            'abonament_lunar': 100.00,
+            'abonament_lunar_elev': 10.00,
+            'abonament_6l': 500.00,
+            'abonament_anual': 900.00,
+            'abonament_donatori': 50.00
         };
+        
+        // Produse pentru elevi/studenti
+        const PRODUSE_ELEVI = ['bilet_19_calatorii_s', 'abonament_lunar_elev'];
         
         let currentPrices = {};
         
@@ -396,13 +335,70 @@
             setTimeout(() => container.innerHTML = '', 5000);
         }
         
+        function showError(fieldId, message) {
+            const errorSpan = document.getElementById('error-' + fieldId);
+            if (errorSpan) {
+                errorSpan.textContent = message;
+                errorSpan.style.display = 'block';
+            }
+        }
+        
+        function clearError(fieldId) {
+            const errorSpan = document.getElementById('error-' + fieldId);
+            if (errorSpan) {
+                errorSpan.textContent = '';
+                errorSpan.style.display = 'none';
+            }
+        }
+        
+        function clearAllErrors() {
+            document.querySelectorAll('.error-msg').forEach(el => {
+                el.textContent = '';
+                el.style.display = 'none';
+            });
+        }
+        
+        // Validare CNP
+        function validateCNP(cnp) {
+            if (!/^\d{13}$/.test(cnp)) return false;
+            const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                sum += parseInt(cnp[i]) * weights[i];
+            }
+            let checkDigit = sum % 11;
+            if (checkDigit === 10) checkDigit = 1;
+            return checkDigit === parseInt(cnp[12]);
+        }
+        
+        // Validare email
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        // Validare telefon
+        function validatePhone(phone) {
+            return /^(07\d{8}|02\d{8}|03\d{8})$/.test(phone.replace(/\s/g, ''));
+        }
+        
+        // Calcul pret
         async function calculatePrice() {
             const tipProdus = document.getElementById('tip_produs').value;
             const cantitate = parseInt(document.getElementById('cantitate').value) || 1;
-            const productInfo = document.getElementById('productInfo');
+            
+            // Show/hide conditii elev
+            const conditiiElev = document.getElementById('conditii-elev');
+            if (PRODUSE_ELEVI.includes(tipProdus)) {
+                conditiiElev.style.display = 'block';
+            } else {
+                conditiiElev.style.display = 'none';
+            }
             
             if (!tipProdus) {
-                productInfo.style.display = 'none';
+                document.getElementById('pretUnitar').textContent = '0.00 RON';
+                document.getElementById('subtotal').textContent = '0.00 RON';
+                document.getElementById('tva').textContent = '0.00 RON';
+                document.getElementById('total').textContent = '0.00 RON';
                 return;
             }
             
@@ -427,35 +423,160 @@
                 document.getElementById('tva').textContent = data.tva.toFixed(2) + ' RON';
                 document.getElementById('total').textContent = data.total.toFixed(2) + ' RON';
                 
-                productInfo.style.display = 'block';
+                // Update hidden fields
+                document.getElementById('pret_unitar_val').value = data.pret_unitar;
+                document.getElementById('subtotal_val').value = data.subtotal;
+                document.getElementById('tva_val').value = data.tva;
+                document.getElementById('total_val').value = data.total;
+                
             } catch (error) {
-                showAlert('Eroare la calculul pretului: ' + error.message, 'error');
+                showAlert('Eroare la calculul prețului: ' + error.message, 'error');
             }
         }
         
+        // Event listeners pentru calcul pret
         document.getElementById('tip_produs').addEventListener('change', calculatePrice);
         document.getElementById('cantitate').addEventListener('change', calculatePrice);
         document.getElementById('cantitate').addEventListener('input', calculatePrice);
         
+        // Validare in timp real
+        document.getElementById('cnp').addEventListener('blur', function() {
+            if (this.value && !validateCNP(this.value)) {
+                showError('cnp', 'CNP invalid! Trebuie să conțină 13 cifre și să fie valid.');
+            } else {
+                clearError('cnp');
+            }
+        });
+        
+        document.getElementById('email').addEventListener('blur', function() {
+            if (this.value && !validateEmail(this.value)) {
+                showError('email', 'Adresa de email nu este validă!');
+            } else {
+                clearError('email');
+            }
+        });
+        
+        document.getElementById('telefon').addEventListener('blur', function() {
+            if (this.value && !validatePhone(this.value)) {
+                showError('telefon', 'Numărul de telefon nu este valid! (ex: 07xxxxxxxx)');
+            } else {
+                clearError('telefon');
+            }
+        });
+        
+        document.getElementById('cantitate').addEventListener('blur', function() {
+            const val = parseInt(this.value);
+            if (val < 1 || val > 50) {
+                showError('cantitate', 'Cantitatea trebuie să fie între 1 și 50!');
+            } else {
+                clearError('cantitate');
+            }
+        });
+        
+        // Submit form
         document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            clearAllErrors();
+            
+            let hasErrors = false;
+            
+            // Validare nume
+            const nume = document.getElementById('nume').value.trim();
+            if (!nume) {
+                showError('nume', 'Numele este obligatoriu!');
+                hasErrors = true;
+            }
+            
+            // Validare prenume
+            const prenume = document.getElementById('prenume').value.trim();
+            if (!prenume) {
+                showError('prenume', 'Prenumele este obligatoriu!');
+                hasErrors = true;
+            }
+            
+            // Validare CNP
+            const cnp = document.getElementById('cnp').value.trim();
+            if (!cnp) {
+                showError('cnp', 'CNP-ul este obligatoriu!');
+                hasErrors = true;
+            } else if (!validateCNP(cnp)) {
+                showError('cnp', 'CNP invalid!');
+                hasErrors = true;
+            }
+            
+            // Validare email
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                showError('email', 'Email-ul este obligatoriu!');
+                hasErrors = true;
+            } else if (!validateEmail(email)) {
+                showError('email', 'Email invalid!');
+                hasErrors = true;
+            }
+            
+            // Validare telefon
+            const telefon = document.getElementById('telefon').value.trim();
+            if (!telefon) {
+                showError('telefon', 'Telefonul este obligatoriu!');
+                hasErrors = true;
+            } else if (!validatePhone(telefon)) {
+                showError('telefon', 'Telefon invalid!');
+                hasErrors = true;
+            }
+            
+            // Validare produs
+            const tipProdus = document.getElementById('tip_produs').value;
+            if (!tipProdus) {
+                showAlert('Selectați un produs!', 'error');
+                hasErrors = true;
+            }
+            
+            // Validare cantitate
+            const cantitate = parseInt(document.getElementById('cantitate').value);
+            if (cantitate < 1 || cantitate > 50) {
+                showError('cantitate', 'Cantitatea trebuie să fie între 1 și 50!');
+                hasErrors = true;
+            }
+            
+            // Validare checkbox elev
+            if (PRODUSE_ELEVI.includes(tipProdus)) {
+                const amLegitimatie = document.getElementById('am_legitimatie').checked;
+                if (!amLegitimatie) {
+                    showAlert('Trebuie să confirmați că dețineți legitimație de elev/student!', 'error');
+                    hasErrors = true;
+                }
+            }
+            
+            // Validare termeni
+            const acceptTermeni = document.getElementById('accept_termeni').checked;
+            if (!acceptTermeni) {
+                showError('termeni', 'Trebuie să acceptați termenii și condițiile!');
+                hasErrors = true;
+            }
+            
+            if (hasErrors) {
+                showAlert('Vă rugăm să corectați erorile din formular!', 'error');
+                return;
+            }
             
             const btn = document.getElementById('btnSubmit');
             btn.disabled = true;
-            btn.textContent = '⏳ Se proceseaza...';
+            btn.textContent = 'Se procesează...';
             
             try {
+                const metodaPlata = document.querySelector('input[name="metoda_plata"]:checked').value;
+                
                 const formData = {
-                    nume: document.getElementById('nume').value,
-                    prenume: document.getElementById('prenume').value,
-                    cnp: document.getElementById('cnp').value,
-                    email: document.getElementById('email').value,
-                    telefon: document.getElementById('telefon').value,
-                    adresa: document.getElementById('adresa').value,
-                    tip_produs: document.getElementById('tip_produs').value,
-                    cantitate: parseInt(document.getElementById('cantitate').value),
-                    metoda_plata: document.getElementById('metoda_plata').value,
-                    observatii: document.getElementById('observatii').value,
+                    nume: nume,
+                    prenume: prenume,
+                    cnp: cnp,
+                    email: email,
+                    telefon: telefon,
+                    adresa: document.getElementById('adresa').value || '',
+                    tip_produs: tipProdus,
+                    cantitate: cantitate,
+                    metoda_plata: metodaPlata,
+                    observatii: document.getElementById('observatii').value || '',
                     pret_unitar: currentPrices.pret_unitar,
                     subtotal: currentPrices.subtotal,
                     tva: currentPrices.tva,
@@ -471,11 +592,47 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    document.getElementById('orderForm').style.display = 'none';
+                    document.getElementById('formCard').style.display = 'none';
                     document.getElementById('orderNumber').textContent = data.numar_comanda;
+                    
+                    // Show success details
+                    const PRODUCT_NAMES = {
+                        'bilet_1_calatorii': 'Bilet 1 călătorie',
+                        'bilet_2_calatorii': 'Bilet 2 călătorii',
+                        'bilet_10_calatorii': 'Bilet 10 călătorii',
+                        'bilet_19_calatorii_s': 'Bilet 19 călătorii (studenți)',
+                        'abonament_24': 'Abonament 24h',
+                        'abonament_72': 'Abonament 72h',
+                        'abonament_saptamanal': 'Abonament săptămânal',
+                        'abonament_lunar': 'Abonament lunar',
+                        'abonament_lunar_elev': 'Abonament lunar elevi/studenți',
+                        'abonament_6l': 'Abonament 6 luni',
+                        'abonament_anual': 'Abonament anual',
+                        'abonament_donatori': 'Abonament donatori sânge'
+                    };
+                    
+                    const METODA_NAMES = {
+                        'card': 'Card Bancar',
+                        'cash': 'Numerar',
+                        'transfer': 'Transfer Bancar'
+                    };
+                    
+                    document.getElementById('successDetails').innerHTML = `
+                        <div class="details-table">
+                            <div class="detail-row"><span>Client:</span><span>${prenume} ${nume}</span></div>
+                            <div class="detail-row"><span>Produs:</span><span>${PRODUCT_NAMES[tipProdus] || tipProdus}</span></div>
+                            <div class="detail-row"><span>Cantitate:</span><span>${cantitate}</span></div>
+                            <div class="detail-row"><span>Total:</span><span><strong>${currentPrices.total.toFixed(2)} RON</strong></span></div>
+                            <div class="detail-row"><span>Plată:</span><span>${METODA_NAMES[metodaPlata]}</span></div>
+                        </div>
+                    `;
+                    
                     document.getElementById('downloadPdf').href = '/download/' + data.pdf_file;
                     document.getElementById('downloadXml').href = '/download/' + data.xml_file;
                     document.getElementById('successBox').style.display = 'block';
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
                     showAlert('Eroare: ' + data.error, 'error');
                 }
@@ -483,8 +640,19 @@
                 showAlert('Eroare: ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
-                btn.textContent = '📤 Trimite Comanda';
+                btn.textContent = 'TRIMITE COMANDA';
             }
+        });
+        
+        // Reset form
+        document.getElementById('btnReset').addEventListener('click', function() {
+            clearAllErrors();
+            document.getElementById('pretUnitar').textContent = '0.00 RON';
+            document.getElementById('subtotal').textContent = '0.00 RON';
+            document.getElementById('tva').textContent = '0.00 RON';
+            document.getElementById('total').textContent = '0.00 RON';
+            document.getElementById('conditii-elev').style.display = 'none';
+            currentPrices = {};
         });
     </script>
 </body>

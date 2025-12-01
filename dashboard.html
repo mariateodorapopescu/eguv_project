@@ -3,257 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metrorex - Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-left: 4px solid #0066cc;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        header h1 {
-            color: #0066cc;
-        }
-        
-        nav a {
-            color: #0066cc;
-            text-decoration: none;
-            margin-left: 15px;
-            padding: 8px 15px;
-            border: 1px solid #0066cc;
-        }
-        
-        nav a:hover {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .actions-bar {
-            background: white;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 4px;
-        }
-        
-        .btn-primary {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        
-        .btn:hover {
-            opacity: 0.9;
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-        
-        .stat-card.highlight {
-            border-left: 4px solid #0066cc;
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #0066cc;
-        }
-        
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        
-        /* Charts Grid */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .chart-card {
-            background: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-        }
-        
-        .chart-card h3 {
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0066cc;
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
-        
-        .chart-card.full-width {
-            grid-column: span 2;
-        }
-        
-        /* Tables */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .data-table th, .data-table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .data-table th {
-            background: #f8f9fa;
-            font-weight: bold;
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #0066cc;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Alert */
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            background: white;
-            max-width: 500px;
-            margin: 100px auto;
-            padding: 30px;
-            text-align: center;
-            border-radius: 5px;
-        }
-        
-        .modal-content h2 {
-            color: #28a745;
-            margin-bottom: 20px;
-        }
-        
-        .modal-content p {
-            margin: 10px 0;
-        }
-        
-        .modal-content .btn {
-            margin: 10px 5px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 900px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-card.full-width {
-                grid-column: span 1;
-            }
-        }
-    </style>
+    <title>Comenzi - Metrorex</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon"><span></span></div>
+                <span class="logo-text">METROREX</span>
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Acasă</a></li>
+                    <li><a href="/comenzi.html" class="active">Comenzile mele</a></li>
+                    <li><a href="/dashboard.html">Istoric tranzacții</a></li>
+                     <li><a href="https://www.metrorex.ro/titluri-de-calatorie-tarife">Tarife</a></li>
+                    <!-- <li><a href="#">Contul meu</a></li> -->
+                </ul>
+            </nav>
+            
+            <!-- <div class="nav-right">
+                <div class="lang-switch">
+                    <a href="#" class="active">RO</a>
+                    <a href="#">EN</a>
+                </div>
+                <button class="logout-btn" title="Deconectare">⏻</button>
+            </div> -->
+        </div>
+    </header>
     <div class="container">
         <header>
             <div>
