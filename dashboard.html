@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metrorex - Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-left: 4px solid #0066cc;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        header h1 {
+            color: #0066cc;
+        }
+        
+        nav a {
+            color: #0066cc;
+            text-decoration: none;
+            margin-left: 15px;
+            padding: 8px 15px;
+            border: 1px solid #0066cc;
+        }
+        
+        nav a:hover {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .actions-bar {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .stat-card.highlight {
+            border-left: 4px solid #0066cc;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .chart-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0066cc;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-card.full-width {
+            grid-column: span 2;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .modal-content h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        
+        .modal-content p {
+            margin: 10px 0;
+        }
+        
+        .modal-content .btn {
+            margin: 10px 5px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>📊 Dashboard Metrorex</h1>
+                <small>Raportare si Analiza - LAB 2 eGovernment</small>
+            </div>
+            <nav>
+                <a href="/">🏠 Formular</a>
+                <a href="/comenzi.html">📋 Comenzi</a>
+                <a href="/dashboard.html">📊 Dashboard</a>
+            </nav>
+        </header>
+        
+        <div id="alertContainer"></div>
+        
+        <div class="actions-bar">
+            <div>
+                <span id="lastUpdate">Ultima actualizare: -</span>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="loadData()">🔄 Actualizeaza</button>
+                <button class="btn btn-success" onclick="generateReport()" id="btnGenerateReport">
+                    📄 Genereaza Raport PDF
+                </button>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card highlight">
+                <div class="stat-value" id="statTotalComenzi">-</div>
+                <div class="stat-label">Total Comenzi</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-value" id="statTotalVanzari">-</div>
+                <div class="stat-label">Total Vanzari (RON)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statTotalTVA">-</div>
+                <div class="stat-label">TVA Colectat (RON)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statMediaComanda">-</div>
+                <div class="stat-label">Media Comanda (RON)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statBilete">-</div>
+                <div class="stat-label">Bilete</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statAbonamente">-</div>
+                <div class="stat-label">Abonamente</div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📊 Bilete vs Abonamente</h3>
+                <div class="chart-container">
+                    <canvas id="chartBileteAbonamente"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>💳 Metode de Plata</h3>
+                <div class="chart-container">
+                    <canvas id="chartMetodePlata"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>🎫 Top Produse Vandute</h3>
+                <div class="chart-container">
+                    <canvas id="chartTopProduse"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>📅 Comenzi pe Zile</h3>
+                <div class="chart-container">
+                    <canvas id="chartComenziZile"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card full-width">
+                <h3>📈 Venituri per Produs (RON)</h3>
+                <div class="chart-container">
+                    <canvas id="chartVenituriProduse"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tables -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📋 Top 5 Produse</h3>
+                <table class="data-table" id="tableTopProduse">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Produs</th>
+                            <th>Comenzi</th>
+                            <th>%</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="chart-card">
+                <h3>💰 Sumar Financiar</h3>
+                <table class="data-table" id="tableFinanciar">
+                    <thead>
+                        <tr>
+                            <th>Indicator</th>
+                            <th>Valoare</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Success -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h2>✅ Raport Generat!</h2>
+            <p id="modalMessage">Raportul a fost generat cu succes.</p>
+            <p id="modalStats"></p>
+            <br>
+            <button class="btn btn-success" onclick="downloadReport()">📥 Descarca PDF</button>
+            <button class="btn btn-primary" onclick="closeModal()">Inchide</button>
+        </div>
+    </div>
+    
+    <script>
+        const NUME_PRODUSE = {
+            'bilet_1_calatorii': 'Bilet 1 cal.',
+            'bilet_2_calatorii': 'Bilet 2 cal.',
+            'bilet_10_calatorii': 'Bilet 10 cal.',
+            'bilet_19_calatorii_s': 'Bilet 19 cal. (stud.)',
+            'abonament_24': 'Abon. 24h',
+            'abonament_72': 'Abon. 72h',
+            'abonament_saptamanal': 'Abon. saptamanal',
+            'abonament_lunar': 'Abon. lunar',
+            'abonament_lunar_elev': 'Abon. lunar elevi',
+            'abonament_6l': 'Abon. 6 luni',
+            'abonament_anual': 'Abon. anual',
+            'abonament_donatori': 'Abon. donatori',
+        };
+        
+        const ZILE = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
+        
+        let charts = {};
+        let currentPdfFile = '';
+        
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+        
+        async function loadData() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateStats(data.stats);
+                    updateCharts(data.stats);
+                    updateTables(data.stats);
+                    
+                    document.getElementById('lastUpdate').textContent = 
+                        'Ultima actualizare: ' + new Date().toLocaleString('ro-RO');
+                    
+                    showAlert('Date actualizate cu succes!', 'success');
+                } else {
+                    showAlert('Eroare: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Eroare la incarcarea datelor: ' + error.message, 'error');
+            }
+        }
+        
+        function updateStats(stats) {
+            document.getElementById('statTotalComenzi').textContent = stats.total_comenzi || 0;
+            document.getElementById('statTotalVanzari').textContent = (stats.total_vanzari || 0).toFixed(2);
+            document.getElementById('statTotalTVA').textContent = (stats.total_tva || 0).toFixed(2);
+            document.getElementById('statMediaComanda').textContent = (stats.media_comanda || 0).toFixed(2);
+            document.getElementById('statBilete').textContent = stats.bilete_vs_abonamente?.bilete || 0;
+            document.getElementById('statAbonamente').textContent = stats.bilete_vs_abonamente?.abonamente || 0;
+        }
+        
+        function updateCharts(stats) {
+            // Chart 1: Bilete vs Abonamente (Doughnut)
+            if (charts.bileteAbonamente) charts.bileteAbonamente.destroy();
+            const bileteData = [
+                stats.bilete_vs_abonamente?.bilete || 0, 
+                stats.bilete_vs_abonamente?.abonamente || 0
+            ];
+            charts.bileteAbonamente = new Chart(document.getElementById('chartBileteAbonamente'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Bilete', 'Abonamente'],
+                    datasets: [{
+                        data: bileteData,
+                        backgroundColor: ['#0066cc', '#28a745'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            
+            // Chart 2: Metode de Plata (Bar)
+            if (charts.metodePlata) charts.metodePlata.destroy();
+            const metode = stats.metode_plata || {};
+            const metodeLabels = Object.keys(metode).map(m => {
+                return m === 'card' ? 'Card' : m === 'cash' ? 'Numerar' : 'Transfer';
+            });
+            charts.metodePlata = new Chart(document.getElementById('chartMetodePlata'), {
+                type: 'bar',
+                data: {
+                    labels: metodeLabels,
+                    datasets: [{
+                        label: 'Comenzi',
+                        data: Object.values(metode),
+                        backgroundColor: ['#0066cc', '#28a745', '#ffc107'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+            
+            // Chart 3: Top Produse (Horizontal Bar)
+            if (charts.topProduse) charts.topProduse.destroy();
+            const produse = stats.produse || {};
+            const produseSorted = Object.entries(produse)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+            charts.topProduse = new Chart(document.getElementById('chartTopProduse'), {
+                type: 'bar',
+                data: {
+                    labels: produseSorted.map(p => NUME_PRODUSE[p[0]] || p[0]),
+                    datasets: [{
+                        label: 'Comenzi',
+                        data: produseSorted.map(p => p[1]),
+                        backgroundColor: '#0066cc',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+            
+            // Chart 4: Comenzi pe Zile (Line)
+            if (charts.comenziZile) charts.comenziZile.destroy();
+            const comenziPerZi = stats.comenzi_per_zi || [0,0,0,0,0,0,0];
+            charts.comenziZile = new Chart(document.getElementById('chartComenziZile'), {
+                type: 'line',
+                data: {
+                    labels: ZILE,
+                    datasets: [{
+                        label: 'Comenzi',
+                        data: comenziPerZi,
+                        borderColor: '#0066cc',
+                        backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+            
+            // Chart 5: Venituri per Produs (Bar)
+            if (charts.venituriProduse) charts.venituriProduse.destroy();
+            const vanzari = stats.vanzari_per_produs || {};
+            const venituriSorted = Object.entries(vanzari)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+            charts.venituriProduse = new Chart(document.getElementById('chartVenituriProduse'), {
+                type: 'bar',
+                data: {
+                    labels: venituriSorted.map(p => NUME_PRODUSE[p[0]] || p[0]),
+                    datasets: [{
+                        label: 'Venituri (RON)',
+                        data: venituriSorted.map(p => p[1].toFixed(2)),
+                        backgroundColor: '#28a745',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        
+        function updateTables(stats) {
+            // Table Top Produse
+            const produse = stats.produse || {};
+            const produseSorted = Object.entries(produse)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            let html1 = '';
+            produseSorted.forEach((p, i) => {
+                const pct = stats.total_comenzi > 0 ? (p[1] / stats.total_comenzi * 100).toFixed(1) : 0;
+                html1 += `<tr>
+                    <td>${i + 1}</td>
+                    <td>${NUME_PRODUSE[p[0]] || p[0]}</td>
+                    <td>${p[1]}</td>
+                    <td>${pct}%</td>
+                </tr>`;
+            });
+            document.querySelector('#tableTopProduse tbody').innerHTML = html1 || '<tr><td colspan="4">Nu sunt date</td></tr>';
+            
+            // Table Financiar
+            const html2 = `
+                <tr><td>Total Vanzari</td><td><strong>${(stats.total_vanzari || 0).toFixed(2)} RON</strong></td></tr>
+                <tr><td>TVA Colectat (19%)</td><td>${(stats.total_tva || 0).toFixed(2)} RON</td></tr>
+                <tr><td>Vanzari fara TVA</td><td>${((stats.total_vanzari || 0) - (stats.total_tva || 0)).toFixed(2)} RON</td></tr>
+                <tr><td>Media Comanda</td><td>${(stats.media_comanda || 0).toFixed(2)} RON</td></tr>
+                <tr><td>Comanda Max</td><td>${(stats.max_comanda || 0).toFixed(2)} RON</td></tr>
+                <tr><td>Comanda Min</td><td>${(stats.min_comanda || 0).toFixed(2)} RON</td></tr>
+            `;
+            document.querySelector('#tableFinanciar tbody').innerHTML = html2;
+        }
+        
+        async function generateReport() {
+            const btn = document.getElementById('btnGenerateReport');
+            btn.disabled = true;
+            btn.textContent = '⏳ Se genereaza...';
+            
+            try {
+                const response = await fetch('/api/generate-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentPdfFile = data.pdf_file;
+                    document.getElementById('modalMessage').textContent = data.message;
+                    document.getElementById('modalStats').textContent = 
+                        `Total comenzi analizate: ${data.stats.total_comenzi} | Vanzari: ${data.stats.total_vanzari.toFixed(2)} RON`;
+                    document.getElementById('successModal').style.display = 'block';
+                } else {
+                    showAlert('Eroare: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Eroare: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📄 Genereaza Raport PDF';
+            }
+        }
+        
+        function downloadReport() {
+            if (currentPdfFile) {
+                window.location.href = '/download/' + currentPdfFile;
+                closeModal();
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+            }
+        }
+        
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

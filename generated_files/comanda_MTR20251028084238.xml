@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<CerereAutorizareMetrorex xmlns="http://metrorex.ro/schema/2025" versiune="1.0">
+  <Comanda>
+    <NumarComanda>MTR20251028084238</NumarComanda>
+    <DataComanda>2025-10-28T08:42:38.546951</DataComanda>
+    <Status>in_procesare</Status>
+  </Comanda>
+  <Client>
+    <Nume>aaa</Nume>
+    <Prenume>aaa</Prenume>
+    <CNP>6011228090049</CNP>
+    <Email>aaaa@yahoo.com</Email>
+    <Telefon>+40700000004</Telefon>
+    <Adresa>Str. Principala nr. 23, Domnesti, Ilfov</Adresa>
+  </Client>
+  <Produs>
+    <TipProdus>bilet_19_calatorii_s</TipProdus>
+    <Cantitate>1</Cantitate>
+    <PretUnitar>4</PretUnitar>
+  </Produs>
+  <Financiar>
+    <Subtotal>4</Subtotal>
+    <TVA>0.76</TVA>
+    <Total>4.76</Total>
+    <Moneda>RON</Moneda>
+  </Financiar>
+  <MetodaPlata>card</MetodaPlata>
+  <Observatii>aaaa</Observatii>
+</CerereAutorizareMetrorex>

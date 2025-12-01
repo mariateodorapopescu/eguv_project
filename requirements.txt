@@ -1,0 +1,26 @@
+# Flask Framework
+Flask==3.0.0
+Flask-PyMongo==2.3.0
+
+# MongoDB Driver
+pymongo==4.6.1
+
+# PDF Generation
+reportlab==4.0.7
+
+# Date și timp
+python-dateutil==2.8.2
+
+# CORS (dacă e necesar)
+Flask-CORS==4.0.0
+
+# Werkzeug (pentru securitate)
+Werkzeug==3.0.1
+
+# Validare date
+email-validator==2.1.0
+
+# Environment variables (opțional)
+python-dotenv==1.0.0
+
+watchdog>=3.0.0

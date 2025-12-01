@@ -1,0 +1,261 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #f5f5f5;
+}
+
+/* Header */
+h1 {
+    color: #0066cc;
+    margin-bottom: 10px;
+    padding: 20px;
+    background: white;
+    border-left: 4px solid #0066cc;
+}
+
+h2 {
+    color: #333;
+    margin: 20px 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Informații */
+ul {
+    background: #e8f4f8;
+    padding: 15px 15px 15px 35px;
+    margin-bottom: 20px;
+    border: 1px solid #b3d9e8;
+}
+
+ul li {
+    margin: 5px 0;
+}
+
+/* Form */
+form {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, select, textarea {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #0066cc;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Validare */
+input:invalid:not(:placeholder-shown):not(:focus) {
+    border-color: #dc3545;
+}
+
+input:valid:not(:placeholder-shown) {
+    border-color: #28a745;
+}
+
+/* Erori */
+.error-message {
+    display: none;
+    color: #dc3545;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+.error-message.active {
+    display: block;
+}
+
+small {
+    color: #666;
+    font-size: 12px;
+}
+
+/* Separatori */
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Tabel calcule */
+table {
+    width: 100%;
+    max-width: 500px;
+    margin: 15px 0;
+    border-collapse: collapse;
+    background: white;
+}
+
+table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+table tr:last-child {
+    background: #0066cc;
+    color: white;
+    font-weight: bold;
+}
+
+/* Buttons */
+button {
+    padding: 12px 24px;
+    margin: 10px 10px 10px 0;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+button[type="submit"] {
+    background: #28a745;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background: #218838;
+}
+
+button[type="reset"] {
+    background: #6c757d;
+    color: white;
+}
+
+button[type="reset"]:hover {
+    background: #5a6268;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Radio & Checkbox */
+input[type="radio"],
+input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+/* Modal */
+#successModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+}
+
+#successModal > div {
+    background: white;
+    width: 90%;
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 30px;
+    border: 2px solid #28a745;
+    position: relative;
+}
+
+#successModal h2 {
+    color: #28a745;
+    border: none;
+    margin-bottom: 20px;
+}
+
+#modal-details {
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 20px 0;
+    border-left: 3px solid #28a745;
+}
+
+#modal-details p {
+    margin: 8px 0;
+}
+
+.btn-download, .btn-primary {
+    background: #0066cc;
+    color: white;
+    width: 100%;
+    margin: 5px 0;
+}
+
+.btn-download:hover, .btn-primary:hover {
+    background: #0052a3;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    background: none;
+    border: none;
+    padding: 0;
+    width: auto;
+}
+
+.close-modal:hover {
+    color: #dc3545;
+}
+
+/* Hidden */
+#conditii-elev {
+    display: none;
+    background: #fff3cd;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ffc107;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    input, select, textarea, table {
+        max-width: 100%;
+    }
+    
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<CerereAutorizareMetrorex xmlns="http://metrorex.ro/schema/2025" versiune="1.0">
+  <Comanda>
+    <NumarComanda>MTR20251028083537</NumarComanda>
+    <DataComanda>2025-10-28T08:35:37.350597</DataComanda>
+    <Status>in_procesare</Status>
+  </Comanda>
+  <Client>
+    <Nume>aaaa</Nume>
+    <Prenume>aaa</Prenume>
+    <CNP>6011228090049</CNP>
+    <Email>aaaa@yahoo.com</Email>
+    <Telefon>+40700000004</Telefon>
+    <Adresa>aaa</Adresa>
+  </Client>
+  <Produs>
+    <TipProdus>bilet_1_calatorii</TipProdus>
+    <Cantitate>1</Cantitate>
+    <PretUnitar>5</PretUnitar>
+  </Produs>
+  <Financiar>
+    <Subtotal>5</Subtotal>
+    <TVA>0.95</TVA>
+    <Total>5.95</Total>
+    <Moneda>RON</Moneda>
+  </Financiar>
+  <MetodaPlata>card</MetodaPlata>
+  <Observatii>aaaa</Observatii>
+</CerereAutorizareMetrorex>

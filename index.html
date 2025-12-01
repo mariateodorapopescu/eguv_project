@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metrorex - Achizitie Bilete si Abonamente</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-left: 4px solid #0066cc;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            color: #666;
+        }
+        
+        nav {
+            margin-top: 15px;
+        }
+        
+        nav a {
+            color: #0066cc;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+            border: 1px solid #0066cc;
+            display: inline-block;
+        }
+        
+        nav a:hover {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .form-section h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-group label span {
+            color: #dc3545;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0,102,204,0.3);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .product-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .product-info p {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .product-info .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0066cc;
+            border-top: 2px solid #0066cc;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: #0055aa;
+        }
+        
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .success-box h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .success-box .order-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+            margin: 15px 0;
+        }
+        
+        .success-box .download-links {
+            margin-top: 15px;
+        }
+        
+        .success-box .download-links a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        
+        .success-box .download-links a:hover {
+            background: #0055aa;
+        }
+        
+        .success-box .download-links a.xml {
+            background: #28a745;
+        }
+        
+        .success-box .download-links a.xml:hover {
+            background: #218838;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚇 Metrorex</h1>
+            <p>Sistem Electronic de Achizitie Bilete si Abonamente</p>
+            <nav>
+                <a href="/">🏠 Formular</a>
+                <a href="/comenzi.html">📋 Comenzi</a>
+                <a href="/dashboard.html">📊 Dashboard</a>
+            </nav>
+        </header>
+        
+        <div class="form-container">
+            <div id="alertContainer"></div>
+            
+            <form id="orderForm">
+                <!-- Date personale -->
+                <div class="form-section">
+                    <h3>👤 Date Personale</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nume <span>*</span></label>
+                            <input type="text" id="nume" name="nume" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prenume <span>*</span></label>
+                            <input type="text" id="prenume" name="prenume" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>CNP <span>*</span></label>
+                            <input type="text" id="cnp" name="cnp" maxlength="13" required placeholder="13 cifre">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email <span>*</span></label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon <span>*</span></label>
+                            <input type="tel" id="telefon" name="telefon" required placeholder="07xxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresa</label>
+                        <input type="text" id="adresa" name="adresa" placeholder="Optional">
+                    </div>
+                </div>
+                
+                <!-- Selectie produs -->
+                <div class="form-section">
+                    <h3>🎫 Selectie Produs</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tip Produs <span>*</span></label>
+                            <select id="tip_produs" name="tip_produs" required>
+                                <option value="">-- Selecteaza --</option>
+                                <optgroup label="Bilete">
+                                    <option value="bilet_1_calatorii">Bilet 1 calatorie - 5.00 RON</option>
+                                    <option value="bilet_2_calatorii">Bilet 2 calatorii - 10.00 RON</option>
+                                    <option value="bilet_10_calatorii">Bilet 10 calatorii - 40.00 RON</option>
+                                    <option value="bilet_19_calatorii_s">Bilet 19 calatorii (studenti) - 4.00 RON</option>
+                                </optgroup>
+                                <optgroup label="Abonamente">
+                                    <option value="abonament_24">Abonament 24h - 12.00 RON</option>
+                                    <option value="abonament_72">Abonament 72h - 35.00 RON</option>
+                                    <option value="abonament_saptamanal">Abonament saptamanal - 45.00 RON</option>
+                                    <option value="abonament_lunar">Abonament lunar - 100.00 RON</option>
+                                    <option value="abonament_lunar_elev">Abonament lunar elevi - 10.00 RON</option>
+                                    <option value="abonament_6l">Abonament 6 luni - 500.00 RON</option>
+                                    <option value="abonament_anual">Abonament anual - 900.00 RON</option>
+                                    <option value="abonament_donatori">Abonament donatori sange - 50.00 RON</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantitate <span>*</span></label>
+                            <input type="number" id="cantitate" name="cantitate" min="1" max="100" value="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="product-info" id="productInfo" style="display: none;">
+                        <p><span>Pret unitar:</span> <span id="pretUnitar">0.00 RON</span></p>
+                        <p><span>Subtotal:</span> <span id="subtotal">0.00 RON</span></p>
+                        <p><span>TVA (19%):</span> <span id="tva">0.00 RON</span></p>
+                        <p class="total"><span>TOTAL:</span> <span id="total">0.00 RON</span></p>
+                    </div>
+                </div>
+                
+                <!-- Metoda plata -->
+                <div class="form-section">
+                    <h3>💳 Metoda de Plata</h3>
+                    <div class="form-group">
+                        <label>Selecteaza metoda <span>*</span></label>
+                        <select id="metoda_plata" name="metoda_plata" required>
+                            <option value="">-- Selecteaza --</option>
+                            <option value="card">Card bancar</option>
+                            <option value="cash">Numerar (la ghiseu)</option>
+                            <option value="transfer">Transfer bancar</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Observatii -->
+                <div class="form-section">
+                    <h3>📝 Observatii</h3>
+                    <div class="form-group">
+                        <label>Observatii suplimentare</label>
+                        <textarea id="observatii" name="observatii" placeholder="Optional"></textarea>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    📤 Trimite Comanda
+                </button>
+            </form>
+            
+            <div id="successBox" class="success-box" style="display: none;">
+                <h3>✅ Comanda inregistrata cu succes!</h3>
+                <p>Numar comanda:</p>
+                <div class="order-number" id="orderNumber"></div>
+                <div class="download-links">
+                    <a href="#" id="downloadPdf">📄 Descarca PDF - Dovada Plata</a>
+                    <a href="#" id="downloadXml" class="xml">📋 Descarca XML - Date Comanda</a>
+                </div>
+                <p style="margin-top: 20px;">
+                    <a href="/" style="color: #0066cc;">Plaseaza o noua comanda</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const PRICES = {
+            'bilet_1_calatorii': 5.0,
+            'bilet_2_calatorii': 10.0,
+            'bilet_10_calatorii': 40.0,
+            'abonament_24': 12.0,
+            'abonament_72': 35.0,
+            'abonament_saptamanal': 45.0,
+            'abonament_lunar': 100.0,
+            'abonament_lunar_elev': 10.0,
+            'abonament_6l': 500.0,
+            'abonament_anual': 900.0,
+            'abonament_donatori': 50.0,
+            'bilet_19_calatorii_s': 4.0,
+        };
+        
+        let currentPrices = {};
+        
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+        
+        async function calculatePrice() {
+            const tipProdus = document.getElementById('tip_produs').value;
+            const cantitate = parseInt(document.getElementById('cantitate').value) || 1;
+            const productInfo = document.getElementById('productInfo');
+            
+            if (!tipProdus) {
+                productInfo.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tip_produs: tipProdus, cantitate: cantitate })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showAlert(data.error, 'error');
+                    return;
+                }
+                
+                currentPrices = data;
+                
+                document.getElementById('pretUnitar').textContent = data.pret_unitar.toFixed(2) + ' RON';
+                document.getElementById('subtotal').textContent = data.subtotal.toFixed(2) + ' RON';
+                document.getElementById('tva').textContent = data.tva.toFixed(2) + ' RON';
+                document.getElementById('total').textContent = data.total.toFixed(2) + ' RON';
+                
+                productInfo.style.display = 'block';
+            } catch (error) {
+                showAlert('Eroare la calculul pretului: ' + error.message, 'error');
+            }
+        }
+        
+        document.getElementById('tip_produs').addEventListener('change', calculatePrice);
+        document.getElementById('cantitate').addEventListener('change', calculatePrice);
+        document.getElementById('cantitate').addEventListener('input', calculatePrice);
+        
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.textContent = '⏳ Se proceseaza...';
+            
+            try {
+                const formData = {
+                    nume: document.getElementById('nume').value,
+                    prenume: document.getElementById('prenume').value,
+                    cnp: document.getElementById('cnp').value,
+                    email: document.getElementById('email').value,
+                    telefon: document.getElementById('telefon').value,
+                    adresa: document.getElementById('adresa').value,
+                    tip_produs: document.getElementById('tip_produs').value,
+                    cantitate: parseInt(document.getElementById('cantitate').value),
+                    metoda_plata: document.getElementById('metoda_plata').value,
+                    observatii: document.getElementById('observatii').value,
+                    pret_unitar: currentPrices.pret_unitar,
+                    subtotal: currentPrices.subtotal,
+                    tva: currentPrices.tva,
+                    total: currentPrices.total
+                };
+                
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('orderForm').style.display = 'none';
+                    document.getElementById('orderNumber').textContent = data.numar_comanda;
+                    document.getElementById('downloadPdf').href = '/download/' + data.pdf_file;
+                    document.getElementById('downloadXml').href = '/download/' + data.xml_file;
+                    document.getElementById('successBox').style.display = 'block';
+                } else {
+                    showAlert('Eroare: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Eroare: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📤 Trimite Comanda';
+            }
+        });
+    </script>
+</body>
+</html>
