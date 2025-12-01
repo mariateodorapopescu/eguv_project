@@ -30,132 +30,206 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <h1 class="page-title">Rapoarte și Statistici</h1>
+            <h1 class="page-title">Cumpără</h1>
             
             <div id="alertContainer"></div>
             
-            <div class="page-layout-dashboard">
-                <div class="dashboard-content">
-                    
-                    <!-- Actions bar -->
-                    <div class="actions-bar">
-                        <span class="last-update" id="lastUpdate">Ultima actualizare: -</span>
-                        <div class="buttons">
-                            <button class="btn btn-secondary" onclick="loadData()">🔄 Actualizează</button>
-                            <button class="btn btn-primary" id="btnGenerateReport" onclick="generateReport()">📄 Generează Raport PDF</button>
-                        </div>
+            <div class="page-layout">
+                <div class="form-container">
+                    <div class="form-card" id="formCard">
+                        
+                        <form id="orderForm">
+                            <!-- Sectiunea 1: Date Personale -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">1. Date Personale</h2>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nume <span class="required">*</span></label>
+                                        <input type="text" id="nume" name="nume" required>
+                                        <span id="error-nume" class="error-msg"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Prenume <span class="required">*</span></label>
+                                        <input type="text" id="prenume" name="prenume" required>
+                                        <span id="error-prenume" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>CNP <span class="required">*</span> (13 cifre)</label>
+                                        <input type="text" id="cnp" name="cnp" maxlength="13" placeholder="13 cifre" required>
+                                        <span id="error-cnp" class="error-msg"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email <span class="required">*</span></label>
+                                        <input type="email" id="email" name="email" required>
+                                        <span id="error-email" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Telefon <span class="required">*</span></label>
+                                        <input type="tel" id="telefon" name="telefon" placeholder="07xxxxxxxx" required>
+                                        <span id="error-telefon" class="error-msg"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Adresa (opțional)</label>
+                                        <input type="text" id="adresa" name="adresa" placeholder="Adresa de domiciliu">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sectiunea 2: Selectare Produs -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">2. Selectare Produs</h2>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tip Produs <span class="required">*</span></label>
+                                        <select id="tip_produs" name="tip_produs" required>
+                                            <option value="">-- Selectați tipul de produs --</option>
+                                            <optgroup label="Bilete">
+                                                <option value="bilet_1_calatorii" data-price="5.00">Bilet 1 călătorie - 5.00 RON</option>
+                                                <option value="bilet_2_calatorii" data-price="10.00">Bilet 2 călătorii - 10.00 RON</option>
+                                                <option value="bilet_10_calatorii" data-price="40.00">Bilet 10 călătorii - 40.00 RON</option>
+                                                <option value="bilet_19_calatorii_s" data-price="4.00">Bilet 19 călătorii (studenți) - 4.00 RON</option>
+                                            </optgroup>
+                                            <optgroup label="Abonamente Scurtă Durată">
+                                                <option value="abonament_24" data-price="12.00">Abonament 24 ore - 12.00 RON</option>
+                                                <option value="abonament_72" data-price="35.00">Abonament 72 ore - 35.00 RON</option>
+                                                <option value="abonament_saptamanal" data-price="45.00">Abonament săptămânal - 45.00 RON</option>
+                                            </optgroup>
+                                            <optgroup label="Abonamente Lungi">
+                                                <option value="abonament_lunar" data-price="100.00">Abonament lunar - 100.00 RON</option>
+                                                <option value="abonament_lunar_elev" data-price="10.00">Abonament lunar elevi/studenți - 10.00 RON</option>
+                                                <option value="abonament_6l" data-price="500.00">Abonament 6 luni - 500.00 RON</option>
+                                                <option value="abonament_anual" data-price="900.00">Abonament anual - 900.00 RON</option>
+                                            </optgroup>
+                                            <optgroup label="Abonamente Speciale">
+                                                <option value="abonament_donatori" data-price="50.00">Abonament donatori sânge - 50.00 RON</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cantitate <span class="required">*</span> (1-50)</label>
+                                        <input type="number" id="cantitate" name="cantitate" min="1" max="50" value="1" required>
+                                        <span id="error-cantitate" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Conditii elev/student -->
+                                <div id="conditii-elev" class="conditii-box" style="display: none;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="am_legitimatie" name="am_legitimatie">
+                                        <span>Confirm că dețin legitimație de elev/student validă</span>
+                                    </label>
+                                    <small class="warning-text">Veți fi obligat(ă) să prezentați legitimația la prima utilizare</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Sectiunea 3: Calcul Pret -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">3. Calcul Preț (AUTOMAT)</h2>
+                                
+                                <div class="price-table">
+                                    <div class="price-row">
+                                        <span>Preț unitar:</span>
+                                        <span id="pretUnitar">0.00 RON</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span>Subtotal (fără TVA):</span>
+                                        <span id="subtotal">0.00 RON</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span>TVA (19%):</span>
+                                        <span id="tva">0.00 RON</span>
+                                    </div>
+                                    <div class="price-row total">
+                                        <span>TOTAL:</span>
+                                        <span id="total">0.00 RON</span>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" id="pret_unitar_val" name="pret_unitar" value="0">
+                                <input type="hidden" id="subtotal_val" name="subtotal" value="0">
+                                <input type="hidden" id="tva_val" name="tva" value="0">
+                                <input type="hidden" id="total_val" name="total" value="0">
+                            </div>
+                            
+                            <!-- Sectiunea 4: Metoda de Plata -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">4. Metodă de Plată</h2>
+                                
+                                <div class="payment-options">
+                                    <label class="radio-label">
+                                        <input type="radio" name="metoda_plata" value="card" checked>
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-text">Card Bancar</span>
+                                    </label>
+                                    
+                                    <label class="radio-label">
+                                        <input type="radio" name="metoda_plata" value="cash">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-text">Numerar (la casele Metrorex)</span>
+                                    </label>
+                                    
+                                    <label class="radio-label">
+                                        <input type="radio" name="metoda_plata" value="transfer">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-text">Transfer Bancar la IBAN 123456789</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Sectiunea 5: Observatii -->
+                            <div class="form-section">
+                                <h2 class="form-section-title">5. Observații</h2>
+                                
+                                <div class="form-group">
+                                    <label>Observații suplimentare (opțional)</label>
+                                    <textarea id="observatii" name="observatii" rows="3" placeholder="Introduceți observații suplimentare..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Termeni si conditii -->
+                            <div class="form-section terms-section">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="accept_termeni" required>
+                                    <span>Accept <a href="#" class="link-blue">termenii și condițiile</a> <span class="required">*</span></span>
+                                </label>
+                                <span id="error-termeni" class="error-msg"></span>
+                            </div>
+                            
+                            <!-- Butoane -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="btnSubmit">
+                                    Continuă>>
+                                </button>
+                                
+                            </div>
+                        </form>
                     </div>
                     
-                    <!-- Stats Cards -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="statTotalComenzi">0</div>
-                            <div class="stat-label">Total Comenzi</div>
+                    <!-- Success box -->
+                    <div class="success-box" id="successBox" style="display: none;">
+                        <div class="success-icon"></div>
+                        <h2>Comandă înregistrată cu succes!</h2>
+                        <p>Numărul comenzii:</p>
+                        <div class="order-number" id="orderNumber"></div>
+                        
+                        <div class="success-details" id="successDetails"></div>
+                        
+                        <div class="download-buttons">
+                            <a href="#" class="btn btn-primary" id="downloadPdf">Descarcă PDF</a>
+                            <a href="#" class="btn btn-primary" id="downloadXml">Descarcă XML</a>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statTotalVanzari">0.00</div>
-                            <div class="stat-label">Total Vânzări (RON)</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statTotalTVA">0.00</div>
-                            <div class="stat-label">TVA Colectat (RON)</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statMediaComanda">0.00</div>
-                            <div class="stat-label">Media Comandă (RON)</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statBilete">0</div>
-                            <div class="stat-label">Bilete</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statAbonamente">0</div>
-                            <div class="stat-label">Abonamente</div>
-                        </div>
+                        <p style="margin-top: 30px;">
+                            <a href="/" class="btn btn-primary">Plasează o nouă comandă</a>
+                        </p>
                     </div>
-                    
-                    <!-- Charts Row 1 -->
-                    <div class="charts-grid">
-                        <div class="chart-card">
-                            <div class="chart-header">📊 Bilete vs Abonamente</div>
-                            <div class="chart-body">
-                                <div class="chart-container">
-                                    <canvas id="chartBileteAbonamente"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chart-card">
-                            <div class="chart-header">💳 Metode de Plată</div>
-                            <div class="chart-body">
-                                <div class="chart-container">
-                                    <canvas id="chartMetodePlata"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chart-card">
-                            <div class="chart-header">🏆 Top Produse Vândute</div>
-                            <div class="chart-body">
-                                <div class="chart-container">
-                                    <canvas id="chartTopProduse"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chart-card">
-                            <div class="chart-header">📅 Comenzi pe Zile</div>
-                            <div class="chart-body">
-                                <div class="chart-container">
-                                    <canvas id="chartComenziZile"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chart-card full-width">
-                            <div class="chart-header">💰 Venituri per Produs (RON)</div>
-                            <div class="chart-body">
-                                <div class="chart-container">
-                                    <canvas id="chartVenituriProduse"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tables -->
-                    <div class="tables-grid">
-                        <div class="table-card">
-                            <div class="table-header">📋 Top 5 Produse</div>
-                            <div class="table-body">
-                                <table class="data-table" id="tableTopProduse">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Produs</th>
-                                            <th>Comenzi</th>
-                                            <th>%</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td colspan="4" style="text-align:center; color:#999;">Se încarcă...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="table-card">
-                            <div class="table-header">💰 Sumar Financiar</div>
-                            <div class="table-body">
-                                <table class="data-table" id="tableFinanciar">
-                                    <thead>
-                                        <tr>
-                                            <th>Indicator</th>
-                                            <th>Valoare</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td colspan="2" style="text-align:center; color:#999;">Se încarcă...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    
                 </div>
                 
                 <!-- Contact sidebar -->
