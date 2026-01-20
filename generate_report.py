@@ -675,7 +675,7 @@ def main():
         'vanzari_produse': create_chart_vanzari_produse(stats),
         'comenzi_zile': create_chart_comenzi_zile(stats),
         'distributie_valori': create_chart_distributie_valori(stats),
-    }
+    } 
     
     # 4. PDF
     pdf_path = generate_pdf_report(stats, charts)

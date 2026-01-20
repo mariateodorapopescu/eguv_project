@@ -6,7 +6,7 @@ Genereaza 20 comenzi fictive in baza de date MongoDB
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import random
-
+ 
 # Conectare MongoDB Atlas
 MONGO_URI = "mongodb+srv://root:student@cluster0.oyzbfhf.mongodb.net/proiect_metrorex?retryWrites=true&w=majority&appName=Cluster0&tlsAllowInvalidCertificates=true"
 
